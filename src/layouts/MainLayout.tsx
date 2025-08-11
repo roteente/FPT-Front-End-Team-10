@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { Layout, Input, Badge, Button, Space, Dropdown, Spin } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { Outlet, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAppSelector } from '@/app/hooks';
 import { useGetCategoriesQuery } from '@/features/categories/categoryApi';
+import Auth from '@/features/auth/pages/Auth';
+
 
 const { Header, Content, Footer } = Layout;
 
@@ -29,6 +32,9 @@ export default function MainLayout() {
       label: <Link to={`/?categoryId=${c.id}`}>{c.name}</Link>,
     })) as any[]),
   ];
+
+
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
 
   return (
     <Layout style={{ minHeight: '100vh', backgroundColor: '#ffffff' }}>
@@ -113,8 +119,8 @@ export default function MainLayout() {
               <span>Trang chủ</span>
             </Link>
 
-            <Link 
-              to="/blank" 
+            
+            <div 
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -124,6 +130,7 @@ export default function MainLayout() {
                 fontSize: 12,
                 gap: 4
               }}
+              onClick={() => setIsAuthModalOpen(true)}
             >
               <img
                 src="/assets/header_header_account_img.svg"
@@ -131,7 +138,9 @@ export default function MainLayout() {
                 style={{ width: 22, height: 22 }}
               />
               <span>Tài khoản</span>
-            </Link>
+            </div>
+
+            <Auth isOpen={isAuthModalOpen} setIsOpen={setIsAuthModalOpen}/>
 
             <Link 
               to="/cart" 
