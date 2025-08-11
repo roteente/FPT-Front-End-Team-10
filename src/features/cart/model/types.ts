@@ -1,0 +1,28 @@
+export interface CartItem {
+  id: number
+  title: string
+  price: number
+  image: string
+  quantity: number
+}
+
+export interface ShippingInfo {
+  method: 'standard' | 'express'
+  cost: number
+  estimatedDays: number
+}
+
+export interface Voucher {
+  code: string
+  type: 'percentage' | 'fixed'
+  value: number
+  minOrderValue?: number
+  maxDiscount?: number
+}
+
+export interface CartState {
+  items: CartItem[]
+  shipping: ShippingInfo
+  voucher: Voucher | null
+  isLoading: boolean
+}
