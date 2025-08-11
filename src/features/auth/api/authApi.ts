@@ -3,26 +3,31 @@ import { LoginRequest, LoginResponse } from '../model/types'
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation<LoginResponse, LoginRequest>({
+    register: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
-        url: '/auth/login',
+        url: '/register',
         method: 'POST',
         body: credentials,
       }),
     }),
-    
+    login: builder.mutation<LoginResponse, LoginRequest>({
+      query: (credentials) => ({
+        url: '/login',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
     logout: builder.mutation<void, void>({
       query: () => ({
-        url: '/auth/logout',
+        url: '/logout',
         method: 'POST',
       }),
     }),
-    
     me: builder.query<LoginResponse['user'], void>({
-      query: () => '/auth/me',
+      query: () => '/600/users', 
       providesTags: ['User'],
     }),
   }),
 })
 
-export const { useLoginMutation, useLogoutMutation, useMeQuery } = authApi
+export const { useRegisterMutation, useLoginMutation, useLogoutMutation, useMeQuery } = authApi
