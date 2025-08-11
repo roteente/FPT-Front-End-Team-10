@@ -1,13 +1,12 @@
 import { baseApi } from '@/core/api/baseApi'
-import { CartItem } from '../model/types'
+import { Cart } from '../model/types'
 
 export const cartApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getCart: builder.query<CartItem[], void>({
-      query: () => '/carts', 
-      providesTags: ['Cart'],
-    }),
+    getCartByUserId: builder.query<Cart[], number>({
+      query: (userId) => `/carts?userId=${userId}`,
+    })
   }),
 })
 
-export const { useGetCartQuery } = cartApi
+export const { useGetCartByUserIdQuery } = cartApi

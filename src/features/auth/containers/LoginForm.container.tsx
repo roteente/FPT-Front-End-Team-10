@@ -11,15 +11,20 @@ export function LoginFormContainer() {
   const [login] = useLoginMutation()
 
   const handleLogin = async (email: string, password: string) => {
-    try {
-      dispatch(loginStart())
-      const result = await login({ email, password }).unwrap()
-      dispatch(loginSuccess(result))
-      navigate('/')
-    } catch (error: any) {
-      dispatch(loginFailure(error.message || 'Đăng nhập thất bại'))
+  try {
+    dispatch(loginStart())
+    const result = await login({ email, password }).unwrap()
+    
+    if (result.user.id) {
+      localStorage.setItem('userId', String(result.user.id))
     }
+    
+    dispatch(loginSuccess(result))
+    navigate('/')
+  } catch (error: any) {
+    dispatch(loginFailure(error.message || 'Đăng nhập thất bại'))
   }
+}
 
   return (
     <LoginForm

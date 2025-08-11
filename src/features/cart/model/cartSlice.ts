@@ -20,7 +20,7 @@ export const cartSlice = createSlice({
       state.items = action.payload
     },
     addToCart: (state, action: PayloadAction<CartItem>) => {
-      const existingItem = state.items.find(item => item.id === action.payload.id)
+      const existingItem = state.items.find(item => item.bookId === action.payload.bookId)
 
       if (existingItem) {
         existingItem.quantity += action.payload.quantity
@@ -30,15 +30,15 @@ export const cartSlice = createSlice({
     },
 
     removeFromCart: (state, action: PayloadAction<number>) => {
-      state.items = state.items.filter(item => item.id !== action.payload)
+      state.items = state.items.filter(item => item.bookId !== action.payload)
     },
 
     updateQuantity: (state, action: PayloadAction<{ id: number; quantity: number }>) => {
-      const item = state.items.find(item => item.id === action.payload.id)
+      const item = state.items.find(item => item.bookId === action.payload.id)
       if (item) {
         item.quantity = Math.max(0, action.payload.quantity)
         if (item.quantity === 0) {
-          state.items = state.items.filter(i => i.id !== action.payload.id)
+          state.items = state.items.filter(i => i.bookId !== action.payload.id)
         }
       }
     },

@@ -12,12 +12,12 @@ export const bookApi = baseApi.injectEndpoints({
       providesTags: ['Book'],
     }),
     
-    getBookById: builder.query<Book, string>({
+    getBookById: builder.query<Book, number>({
       query: (id) => `/Books/${id}`,
       providesTags: (result, error, id) => [{ type: 'Book', id }],
     }),
     
-    searchBooks: builder.query<Book[], string>({
+    searchBooks: builder.query<Book[], number>({
       query: (query) => ({
         url: '/Books',
         params: { q: query },
