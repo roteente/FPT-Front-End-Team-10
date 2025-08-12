@@ -32,3 +32,32 @@ export const storage = {
     }
   },
 }
+
+// Enhanced storage utilities
+export const setStorage = (key: string, value: string, storageType: 'localStorage' | 'sessionStorage' = 'localStorage'): void => {
+  try {
+    const storageObj = storageType === 'localStorage' ? localStorage : sessionStorage
+    storageObj.setItem(key, value)
+  } catch (error) {
+    console.error(`Failed to save to ${storageType}:`, error)
+  }
+}
+
+export const getStorage = (key: string, storageType: 'localStorage' | 'sessionStorage' = 'localStorage'): string | null => {
+  try {
+    const storageObj = storageType === 'localStorage' ? localStorage : sessionStorage
+    return storageObj.getItem(key)
+  } catch (error) {
+    console.error(`Failed to get from ${storageType}:`, error)
+    return null
+  }
+}
+
+export const removeStorage = (key: string, storageType: 'localStorage' | 'sessionStorage' = 'localStorage'): void => {
+  try {
+    const storageObj = storageType === 'localStorage' ? localStorage : sessionStorage
+    storageObj.removeItem(key)
+  } catch (error) {
+    console.error(`Failed to remove from ${storageType}:`, error)
+  }
+}

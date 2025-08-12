@@ -1,0 +1,266 @@
+{
+  "Books": [
+    {
+      "id": 1,
+      "name": "Dắt con đi khắp thế gian - Châu Âu",
+      "rating_average": 4.5,
+      "short_description": "Cuốn sách hướng dẫn du lịch châu Âu dành cho gia đình có trẻ em",
+      "description": "<p>Cuốn sách hướng dẫn du lịch châu Âu dành cho gia đình có trẻ em. Với những kinh nghiệm thực tế và lời khuyên hữu ích, cuốn sách sẽ giúp bạn có những chuyến đi đáng nhớ cùng con em mình.</p><p>Nội dung bao gồm:</p><ul><li>Hướng dẫn lập kế hoạch du lịch</li><li>Những địa điểm thú vị cho trẻ em</li><li>Kinh nghiệm ăn uống và nghỉ ngơi</li><li>Mẹo vặt khi đi du lịch cùng trẻ</li></ul>",
+      "original_price": 350000,
+      "list_price": 280000,
+      "current_seller": {
+        "id": 1,
+        "name": "Tiki Trading",
+        "price": 280000,
+        "is_best_store": true
+      },
+      "quantity_sold": {
+        "value": 1234,
+        "text": "Đã bán 1234"
+      },
+      "images": [
+        {
+          "base_url": "https://picsum.photos/280/368?random=1",
+          "medium_url": "https://picsum.photos/280/368?random=1",
+          "thumbnail_url": "https://picsum.photos/280/368?random=1",
+          "small_url": "https://picsum.photos/280/368?random=1",
+          "large_url": "https://picsum.photos/400/600?random=1"
+        }
+      ],
+      "specifications": [
+        {
+          "name": "Thông tin chung",
+          "attributes": [
+            { "code": "author", "name": "Tác giả", "value": "Asuka Takahashi" },
+            { "code": "publisher", "name": "Nhà xuất bản", "value": "NXB Thế Giới" },
+            { "code": "pages", "name": "Số trang", "value": "320" },
+            { "code": "language", "name": "Ngôn ngữ", "value": "Tiếng Việt" },
+            { "code": "format", "name": "Hình thức", "value": "Bìa mềm" }
+          ]
+        }
+      ],
+      "authors": [
+        {
+          "id": 1,
+          "name": "Asuka Takahashi"
+        }
+      ],
+      "categories": {
+        "id": 1,
+        "name": "Du lịch"
+      }
+    },
+    {
+      "id": 2,
+      "name": "Atomic Habits - Thói quen nguyên tử",
+      "rating_average": 4.8,
+      "short_description": "Cách xây dựng thói quen tốt và loại bỏ thói quen xấu",
+      "description": "<p><strong>Atomic Habits</strong> là cuốn sách hướng dẫn thực tế về cách xây dựng thói quen tốt và loại bỏ thói quen xấu. James Clear trình bày phương pháp đơn giản nhưng hiệu quả để tạo ra những thay đổi tích cực trong cuộc sống.</p><p>Cuốn sách sẽ giúp bạn:</p><ul><li>Hiểu về sức mạnh của thói quen nhỏ</li><li>Xây dựng hệ thống thói quen bền vững</li><li>Vượt qua những trở ngại thường gặp</li><li>Duy trì động lực lâu dài</li></ul>",
+      "original_price": 299000,
+      "list_price": 239000,
+      "current_seller": {
+        "id": 2,
+        "name": "Fahasa Official",
+        "price": 239000,
+        "is_best_store": true
+      },
+      "quantity_sold": {
+        "value": 5678,
+        "text": "Đã bán 5678"
+      },
+      "images": [
+        {
+          "base_url": "https://picsum.photos/280/368?random=2",
+          "medium_url": "https://picsum.photos/280/368?random=2",
+          "thumbnail_url": "https://picsum.photos/280/368?random=2",
+          "small_url": "https://picsum.photos/280/368?random=2",
+          "large_url": "https://picsum.photos/400/600?random=2"
+        }
+      ],
+      "specifications": [
+        {
+          "name": "Thông tin chung",
+          "attributes": [
+            { "code": "author", "name": "Tác giả", "value": "James Clear" },
+            { "code": "publisher", "name": "Nhà xuất bản", "value": "NXB Thế Giới" },
+            { "code": "pages", "name": "Số trang", "value": "368" },
+            { "code": "language", "name": "Ngôn ngữ", "value": "Tiếng Việt" },
+            { "code": "format", "name": "Hình thức", "value": "Bìa cứng" }
+          ]
+        }
+      ],
+      "authors": [
+        {
+          "id": 2,
+          "name": "James Clear"
+        }
+      ],
+      "categories": {
+        "id": 2,
+        "name": "Phát triển bản thân"
+      }
+    },
+    {
+      "id": 3,
+      "name": "Sapiens: Lược sử loài người",
+      "rating_average": 4.6,
+      "short_description": "Cuốn sách về lịch sử tiến hóa của loài người từ thời tiền sử đến hiện đại",
+      "original_price": 450000,
+      "list_price": 360000,
+      "current_seller": {
+        "id": 3,
+        "name": "Alpha Books",
+        "price": 360000,
+        "is_best_store": false
+      },
+      "quantity_sold": {
+        "value": 3456,
+        "text": "Đã bán 3456"
+      },
+      "images": [
+        {
+          "base_url": "https://picsum.photos/280/368?random=3",
+          "medium_url": "https://picsum.photos/280/368?random=3",
+          "thumbnail_url": "https://picsum.photos/280/368?random=3",
+          "small_url": "https://picsum.photos/280/368?random=3",
+          "large_url": "https://picsum.photos/400/600?random=3"
+        }
+      ],
+      "specifications": [
+        {
+          "name": "Thông tin chung",
+          "attributes": [
+            { "code": "author", "name": "Tác giả", "value": "Yuval Noah Harari" },
+            { "code": "publisher", "name": "Nhà xuất bản", "value": "NXB Trẻ" },
+            { "code": "pages", "name": "Số trang", "value": "512" },
+            { "code": "language", "name": "Ngôn ngữ", "value": "Tiếng Việt" },
+            { "code": "format", "name": "Hình thức", "value": "Bìa mềm" }
+          ]
+        }
+      ],
+      "authors": [
+        {
+          "id": 3,
+          "name": "Yuval Noah Harari"
+        }
+      ],
+      "categories": {
+        "id": 3,
+        "name": "Lịch sử"
+      }
+    },
+    {
+      "id": 4,
+      "name": "Tôi thấy hoa vàng trên cỏ xanh",
+      "rating_average": 4.3,
+      "short_description": "Tiểu thuyết về tuổi thơ ở vùng quê Việt Nam",
+      "original_price": 120000,
+      "list_price": 96000,
+      "current_seller": {
+        "id": 4,
+        "name": "NXB Trẻ Official",
+        "price": 96000,
+        "is_best_store": true
+      },
+      "quantity_sold": {
+        "value": 8901,
+        "text": "Đã bán 8901"
+      },
+      "images": [
+        {
+          "base_url": "https://picsum.photos/280/368?random=4",
+          "medium_url": "https://picsum.photos/280/368?random=4",
+          "thumbnail_url": "https://picsum.photos/280/368?random=4",
+          "small_url": "https://picsum.photos/280/368?random=4",
+          "large_url": "https://picsum.photos/400/600?random=4"
+        }
+      ],
+      "specifications": [
+        {
+          "name": "Thông tin chung",
+          "attributes": [
+            { "code": "author", "name": "Tác giả", "value": "Nguyễn Nhật Ánh" },
+            { "code": "publisher", "name": "Nhà xuất bản", "value": "NXB Trẻ" },
+            { "code": "pages", "name": "Số trang", "value": "368" },
+            { "code": "language", "name": "Ngôn ngữ", "value": "Tiếng Việt" },
+            { "code": "format", "name": "Hình thức", "value": "Bìa mềm" }
+          ]
+        }
+      ],
+      "authors": [
+        {
+          "id": 4,
+          "name": "Nguyễn Nhật Ánh"
+        }
+      ],
+      "categories": {
+        "id": 4,
+        "name": "Văn học Việt Nam"
+      }
+    }
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Sách tiếng Việt",
+      "slug": "sach-tieng-viet",
+      "parentId": null,
+      "isFeatured": true,
+      "order": 1,
+      "icon": "📚"
+    },
+    {
+      "id": 2,
+      "name": "Sách tiếng Anh",
+      "slug": "sach-tieng-anh",
+      "parentId": null,
+      "isFeatured": true,
+      "order": 2,
+      "icon": "📖"
+    },
+    {
+      "id": 3,
+      "name": "Văn học",
+      "slug": "van-hoc",
+      "parentId": 1,
+      "isFeatured": false,
+      "order": 3,
+      "icon": "✒️"
+    },
+    {
+      "id": 4,
+      "name": "Kinh tế",
+      "slug": "kinh-te",
+      "parentId": 1,
+      "isFeatured": true,
+      "order": 4,
+      "icon": "💼"
+    },
+    {
+      "id": 5,
+      "name": "Tâm lý - Kỹ năng sống",
+      "slug": "tam-ly-ky-nang-song",
+      "parentId": 1,
+      "isFeatured": true,
+      "order": 5,
+      "icon": "🧠"
+    },
+    {
+      "id": 6,
+      "name": "Sách thiếu nhi",
+      "slug": "sach-thieu-nhi",
+      "parentId": null,
+      "isFeatured": true,
+      "order": 6,
+      "icon": "👶"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "email": "user@example.com",
+      "name": "Người dùng test",
+      "avatar": "https://via.placeholder.com/100"
+    }
+  ]
+}

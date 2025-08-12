@@ -1,10 +1,12 @@
-export interface Category {
-  id: number
-  name: string
-  slug: string
-  description?: string
-  image?: string
-  parentId?: number
-  children?: Category[]
-  bookCount?: number
-}
+export type Category = {
+  id: number;
+  slug: string;
+  name: string;
+  parentId: number | null;
+  order: number;
+  image?: string;
+  banner?: string;
+  description?: string;
+  isFeatured?: boolean;
+  active?: boolean;
+};

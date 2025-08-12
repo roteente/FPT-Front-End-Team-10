@@ -7,7 +7,7 @@ interface ImageWithFallbackProps extends ImgHTMLAttributes<HTMLImageElement> {
 
 export function ImageWithFallback({ 
   src, 
-  fallback = '/placeholder-book.jpg', 
+  fallback = 'https://via.placeholder.com/280x368/e5e7eb/9ca3af?text=No+Image', 
   className, 
   alt = '',
   ...props 
@@ -15,12 +15,17 @@ export function ImageWithFallback({
   const [error, setError] = useState(false)
   const [loading, setLoading] = useState(true)
 
+  // Debug logs
+  console.log('ImageWithFallback rendered:', { src, fallback, error, loading });
+
   const handleError = () => {
+    console.log('Image failed to load:', src);
     setError(true)
     setLoading(false)
   }
 
   const handleLoad = () => {
+    console.log('Image loaded successfully:', src);
     setLoading(false)
   }
 

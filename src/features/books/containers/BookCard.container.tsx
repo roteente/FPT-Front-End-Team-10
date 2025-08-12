@@ -1,6 +1,6 @@
 import { BookCard } from '../ui/BookCard'
 import { useBookCard } from '../hooks/useBookCard'
-import { Book } from '../model/types'
+import { Book } from '../api/bookApi'
 
 interface BookCardContainerProps {
   book: Book

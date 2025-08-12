@@ -1,17 +1,16 @@
+import { Link } from 'react-router-dom'
 import { Logo } from './header/Logo'
 import { SearchBox } from './header/SearchBox'
-
 import { CartButton } from './header/CartButton'
 import { AuthButton } from './header/AuthButton'
 
 interface HeaderProps {
   onSearch?: (query: string) => void
   cartItemsCount?: number
-  user?: { name: string } | null
-  onLogout?: () => void
+  onLoginClick?: () => void
 }
 
-export function Header({ onSearch, cartItemsCount = 0, user, onLogout }: HeaderProps) {
+export function Header({ onSearch, cartItemsCount = 0, onLoginClick }: HeaderProps) {
   return (
     <header className="bg-white shadow-sm border-b border-gray-200" style={{ height: '88px' }}>
       <div className="max-w-[1440px] mx-auto px-6 h-full">
@@ -30,22 +29,23 @@ export function Header({ onSearch, cartItemsCount = 0, user, onLogout }: HeaderP
           {/* Right section - Home, Account and Cart */}
           <div className="flex items-center space-x-6">
             {/* Home navigation */}
-            <div className="flex flex-col items-center cursor-pointer hover:text-[#003EA1] transition-colors">
+            <Link 
+              to="/" 
+              className="flex flex-col items-center cursor-pointer hover:text-[#003EA1] transition-colors"
+            >
               <img 
                 src="/header_menu_item_home.svg" 
                 alt="Trang chủ" 
                 className="w-6 h-6 mb-1"
               />
               <span className="text-xs text-[#808089] hover:text-[#003EA1]">Trang chủ</span>
-            </div>
+            </Link>
             
-            <AuthButton user={user} onLogout={onLogout} />
+            <AuthButton onLoginClick={onLoginClick} />
             <CartButton itemCount={cartItemsCount} />
           </div>
         </div>
       </div>
-      
-      
     </header>
   )
 }

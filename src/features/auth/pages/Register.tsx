@@ -1,33 +1,33 @@
 import { Link } from 'react-router-dom'
-import { LoginFormContainer } from '../containers/LoginForm.container'
+import { RegisterFormContainer } from '../containers/RegisterForm.container'
 
-export default function Login() {
+export default function Register() {
   return (
     <div className="min-h-screen flex">
-      {/* Left side - Login Form */}
+      {/* Left side - Register Form */}
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-md w-full space-y-8">
           <div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Đăng nhập bằng email
+              Tạo tài khoản mới
             </h2>
             <p className="text-sm text-gray-600">
-              Nhập email và mật khẩu tài khoản Tiki
+              Tham gia cùng Tiki để khám phá thế giới mua sắm
             </p>
           </div>
 
           <div className="mt-8">
-            <LoginFormContainer />
+            <RegisterFormContainer />
           </div>
 
           <div className="text-center mt-6">
             <p className="text-sm text-gray-600">
-              Chưa có tài khoản?{' '}
+              Đã có tài khoản?{' '}
               <Link 
-                to="/register" 
+                to="/login" 
                 className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
               >
-                Tạo tài khoản
+                Đăng nhập ngay
               </Link>
             </p>
           </div>
@@ -35,35 +35,35 @@ export default function Login() {
       </div>
 
       {/* Right side - Illustration */}
-      <div className="hidden lg:block flex-1 bg-gradient-to-br from-blue-50 to-indigo-100 relative">
+      <div className="hidden lg:block flex-1 bg-gradient-to-br from-green-50 to-blue-100 relative">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center">
             {/* Robot Logo */}
             <div className="mb-8 flex justify-center">
               <div className="relative">
                 {/* Main robot body */}
-                <div className="w-32 h-32 bg-blue-500 rounded-full flex items-center justify-center relative shadow-lg">
+                <div className="w-32 h-32 bg-green-500 rounded-full flex items-center justify-center relative shadow-lg">
                   <div className="text-white text-4xl font-bold">nn</div>
                   
                   {/* Robot eyes */}
                   <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                    <div className="w-8 h-6 bg-blue-600 rounded-full flex items-center justify-center">
+                    <div className="w-8 h-6 bg-green-600 rounded-full flex items-center justify-center">
                       <div className="w-3 h-3 bg-white rounded-full"></div>
                     </div>
                   </div>
                   
                   {/* Robot arms */}
                   <div className="absolute -left-6 top-1/2 transform -translate-y-1/2">
-                    <div className="w-4 h-8 bg-blue-400 rounded-full"></div>
+                    <div className="w-4 h-8 bg-green-400 rounded-full"></div>
                   </div>
                   <div className="absolute -right-6 top-1/2 transform -translate-y-1/2">
-                    <div className="w-4 h-8 bg-blue-400 rounded-full"></div>
+                    <div className="w-4 h-8 bg-green-400 rounded-full"></div>
                   </div>
                   
                   {/* Robot legs */}
                   <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                    <div className="w-3 h-6 bg-blue-400 rounded-full"></div>
-                    <div className="w-3 h-6 bg-blue-400 rounded-full"></div>
+                    <div className="w-3 h-6 bg-green-400 rounded-full"></div>
+                    <div className="w-3 h-6 bg-green-400 rounded-full"></div>
                   </div>
                 </div>
                 
@@ -96,11 +96,11 @@ export default function Login() {
             
             {/* Text */}
             <div className="space-y-4">
-              <h3 className="text-2xl font-bold text-blue-600">
-                Mua sắm tại Tiki
+              <h3 className="text-2xl font-bold text-green-600">
+                Chào mừng đến với Tiki
               </h3>
-              <p className="text-blue-500 max-w-sm mx-auto leading-relaxed">
-                Siêu ưu đãi mỗi ngày
+              <p className="text-green-500 max-w-sm mx-auto leading-relaxed">
+                Khám phá hàng triệu sản phẩm chất lượng
               </p>
             </div>
           </div>

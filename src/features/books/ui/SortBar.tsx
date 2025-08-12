@@ -7,7 +7,7 @@ interface SortBarProps {
   totalResults?: number
 }
 
-export function SortBar({ currentSort, currentOrder, onSortChange, totalResults }: SortBarProps) {
+export default function SortBar({ currentSort, currentOrder, onSortChange, totalResults }: SortBarProps) {
   const sortOptions = [
     { value: 'title', label: 'Tên sách', orders: ['asc', 'desc'] },
     { value: 'price', label: 'Giá', orders: ['asc', 'desc'] },

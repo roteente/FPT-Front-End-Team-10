@@ -1,6 +1,6 @@
 import { useAppDispatch } from '@/app/hooks'
 import { addToCart } from '@/features/cart/model/cartSlice'
-import { Book } from '../model/types'
+import { Book } from '../api/bookApi'
 
 export function useBookCard() {
   const dispatch = useAppDispatch()
@@ -13,7 +13,7 @@ export function useBookCard() {
     dispatch(addToCart({
       id: book.id,
       title: book.name,
-      price: book.current_seller.price,
+      price: book.current_seller?.price || 0,
       image: imageUrl,
       quantity: 1,
     }))
