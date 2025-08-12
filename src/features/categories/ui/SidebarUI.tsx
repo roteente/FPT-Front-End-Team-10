@@ -1,48 +1,60 @@
-import { Category } from '../model/types'
+import * as React from "react";
+import { cn } from "@/core/utils/cn";
+import type { Category } from "../model/types";
 
-interface SidebarUIProps {
-  categories: Category[]
-  selectedCategory?: string
-  onCategorySelect: (categorySlug: string) => void
-}
+type SidebarUIProps = {
+  title?: string;
+  categories: Category[];
+  selectedCategory?: string;
+  onCategorySelect?: (slug: string) => void;
+  className?: string;
+  itemClassName?: string;
+};
 
-export function SidebarUI({ categories, selectedCategory, onCategorySelect }: SidebarUIProps) {
+export default function SidebarUI({
+  title = "Khám phá theo danh mục",
+  categories,
+  selectedCategory,
+  onCategorySelect,
+  className,
+  itemClassName,
+}: SidebarUIProps) {
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Danh mục</h3>
-      <ul className="space-y-2">
-        <li>
-          <button
-            onClick={() => onCategorySelect('')}
-            className={`w-full text-left px-3 py-2 rounded transition-colors ${
-              !selectedCategory
-                ? 'bg-blue-100 text-blue-700'
-                : 'text-gray-700 hover:bg-gray-100'
-            }`}
-          >
-            Tất cả
-          </button>
-        </li>
-        {categories.map((category) => (
-          <li key={category.id}>
+    <aside
+      className={cn(
+        "w-[240px] min-h-[722px]",
+        "bg-white border border-[#EBEBF0] rounded-[8px]",
+        "sticky top-[88px] max-h-[calc(100vh-88px-24px)] overflow-auto",
+        "px-3 py-2 md:px-4 md:py-3",
+        className
+      )}
+    >
+      <div className="h-[46px] flex items-center px-2">
+        <h2 className="text-[15px] font-semibold text-[#27272A]">{title}</h2>
+      </div>
+
+      <nav className="mt-1 space-y-1">
+        {categories.map((c) => {
+          const slug = c.slug ?? String(c.id);
+          const active = selectedCategory === slug;
+          return (
             <button
-              onClick={() => onCategorySelect(category.slug)}
-              className={`w-full text-left px-3 py-2 rounded transition-colors ${
-                selectedCategory === category.slug
-                  ? 'bg-blue-100 text-blue-700'
-                  : 'text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              {category.name}
-              {category.bookCount && (
-                <span className="text-sm text-gray-500 ml-1">
-                  ({category.bookCount})
-                </span>
+              key={c.id}
+              type="button"
+              onClick={() => onCategorySelect?.(slug)}
+              className={cn(
+                "w-full text-left h-10 px-3 rounded-lg transition",
+                "text-[14px] leading-5 text-[#27272A]",
+                "hover:bg-[#F6F7F9]",
+                active && "bg-[#F6F7F9] font-medium",
+                itemClassName
               )}
+            >
+              {c.name}
             </button>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
+          );
+        })}
+      </nav>
+    </aside>
+  );
 }

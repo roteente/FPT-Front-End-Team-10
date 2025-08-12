@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, ImageWithFallback, Rating } from '@/ui/primitives'
 import { formatPrice } from '@/core/utils/format'
-import { Book } from '../model/types'
+import { Book } from '../api/bookApi'
 
 interface BookDetailsUIProps {
   book: Book
@@ -12,63 +12,68 @@ interface BookDetailsUIProps {
 export function BookDetailsUI({ book, onAddToCart }: BookDetailsUIProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [activeTab, setActiveTab] = useState('description')
+  const [quantity, setQuantity] = useState(1)
 
-  const currentPrice = book.current_seller.price
-  const originalPrice = book.original_price || book.list_price
+  const currentPrice = book.current_seller?.price || 0
+  const originalPrice = book.original_price || book.list_price || 0
   const discountPercent = originalPrice && currentPrice < originalPrice
     ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
     : 0
 
-  const publisher = book.specifications?.find(spec => spec.name === "Thông tin chung")
-    ?.attributes.find(attr => attr.code === "publisher_vn" || attr.code === "manufacturer")?.value
-
   const imageUrl = book.images && book.images.length > 0 
-    ? book.images[selectedImageIndex]?.large_url || book.images[selectedImageIndex]?.base_url
+    ? book.images[selectedImageIndex]?.large_url || book.images[selectedImageIndex]?.medium_url || book.images[selectedImageIndex]?.base_url
     : 'https://via.placeholder.com/400x600'
 
+  const handleQuantityChange = (delta: number) => {
+    setQuantity(Math.max(1, quantity + delta))
+  }
+
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
       {/* Breadcrumb */}
       <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 py-3">
+        <div className="max-w-[1392px] mx-auto px-6 py-3">
           <nav className="text-sm">
             <Link to="/" className="text-blue-600 hover:underline">Trang chủ</Link>
             <span className="mx-2 text-gray-400">/</span>
-            <Link to="/" className="text-blue-600 hover:underline">{book.categories.name}</Link>
+            <Link to="/" className="text-blue-600 hover:underline">
+              {book.categories?.name || 'Sách'}
+            </Link>
             <span className="mx-2 text-gray-400">/</span>
             <span className="text-gray-600 truncate">{book.name}</span>
           </nav>
         </div>
       </div>
 
-      {/* Main Content - 3 Column Layout */}
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Column 1: Product Gallery (4/12) */}
-            <div className="lg:col-span-4 space-y-4">
+      {/* Main Content */}
+      <div className="max-w-[1392px] mx-auto px-6 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          {/* Left Column: Product Images */}
+          <div className="lg:col-span-5">
+            <div className="bg-white rounded-lg p-6">
               {/* Main Image */}
-              <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+              <div className="aspect-[3/4] bg-white rounded-lg mb-4 flex items-center justify-center overflow-hidden border">
                 <ImageWithFallback
                   src={imageUrl}
                   alt={book.name}
-                  className="w-full h-full object-cover"
+                  className="max-w-full max-h-full object-contain"
                 />
               </div>
               
               {/* Thumbnail Images */}
               {book.images && book.images.length > 1 && (
-                <div className="grid grid-cols-4 gap-2">
-                  {book.images.slice(0, 4).map((image, index) => (
+                <div className="flex gap-2 justify-center">
+                  {book.images.slice(0, 5).map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImageIndex(index)}
-                      className={`aspect-square rounded border-2 overflow-hidden ${
+                      className={`w-16 h-20 rounded border-2 overflow-hidden ${
                         selectedImageIndex === index ? 'border-blue-500' : 'border-gray-200'
                       }`}
                     >
                       <ImageWithFallback
-                        src={image.small_url || image.base_url}
+                        src={image.small_url || image.thumbnail_url || image.base_url}
                         alt={`${book.name} ${index + 1}`}
                         className="w-full h-full object-cover"
                       />
@@ -77,188 +82,196 @@ export function BookDetailsUI({ book, onAddToCart }: BookDetailsUIProps) {
                 </div>
               )}
             </div>
+          </div>
 
-            {/* Column 2: Product Information (5/12) */}
-            <div className="lg:col-span-5 space-y-4">
-              {/* Title */}
-              <h1 className="text-xl font-bold text-gray-900 leading-tight">
+          {/* Right Column: Product Info & Purchase */}
+          <div className="lg:col-span-7 space-y-6">
+            
+            {/* Product Title & Rating */}
+            <div className="bg-white rounded-lg p-6">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-white text-sm font-bold">T</span>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm font-medium">Tiki Trading</span>
+                    {book.current_seller?.is_best_store && (
+                      <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                        OFFICIAL
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    Giao bởi Tiki • Freeship 0₫
+                  </div>
+                </div>
+              </div>
+
+              <h1 className="text-2xl font-bold text-gray-900 mb-4 leading-tight">
                 {book.name}
               </h1>
               
-              {/* Rating & Sold */}
-              <div className="flex items-center space-x-4">
+              {/* Rating & Reviews */}
+              <div className="flex items-center gap-4 mb-4">
                 <div className="flex items-center">
-                  <Rating rating={book.rating_average} size="sm" />
-                  <span className="ml-1 text-sm font-medium text-gray-900">
-                    {book.rating_average}
+                  <Rating rating={book.rating_average || 0} size="sm" />
+                  <span className="ml-2 text-sm font-medium text-gray-900">
+                    {book.rating_average || 0}
                   </span>
                 </div>
+                <span className="text-sm text-blue-600 hover:underline cursor-pointer">
+                  (Xem 1,234 đánh giá)
+                </span>
                 {book.quantity_sold && (
                   <span className="text-sm text-gray-500">
-                    {book.quantity_sold.text}
+                    | {book.quantity_sold.text}
                   </span>
                 )}
               </div>
 
-              {/* Product Details Table */}
-              <div className="border rounded-lg">
-                <div className="bg-gray-50 px-4 py-2 border-b">
-                  <h3 className="font-medium text-gray-900">Thông tin chi tiết</h3>
-                </div>
-                <div className="p-4 space-y-3">
-                  {/* Author */}
-                  {book.authors && book.authors.length > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-sm text-gray-600">Tác giả</span>
-                      <span className="text-sm font-medium text-gray-900">
-                        {book.authors[0].name}
+              {/* Price Section */}
+              <div className="bg-gray-50 rounded-lg p-4 mb-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-3xl font-bold text-red-500">
+                    {currentPrice.toLocaleString()}₫
+                  </span>
+                  {discountPercent > 0 && (
+                    <>
+                      <span className="text-lg text-gray-400 line-through">
+                        {originalPrice.toLocaleString()}₫
                       </span>
-                    </div>
-                  )}
-                  
-                  {/* Publisher */}
-                  {publisher && (
-                    <div className="flex justify-between">
-                      <span className="text-sm text-gray-600">Nhà xuất bản</span>
-                      <span className="text-sm font-medium text-gray-900">
-                        {publisher}
+                      <span className="bg-red-100 text-red-600 text-sm px-2 py-1 rounded">
+                        -{discountPercent}%
                       </span>
-                    </div>
-                  )}
-                  
-                  {/* Specifications */}
-                  {book.specifications?.map((spec) => 
-                    spec.attributes.slice(0, 5).map((attr, index) => (
-                      <div key={index} className="flex justify-between">
-                        <span className="text-sm text-gray-600">{attr.name}</span>
-                        <span className="text-sm font-medium text-gray-900">
-                          {attr.value}
-                        </span>
-                      </div>
-                    ))
+                    </>
                   )}
                 </div>
+                {discountPercent > 0 && (
+                  <div className="text-sm text-red-500">
+                    Tiết kiệm: {(originalPrice - currentPrice).toLocaleString()}₫
+                  </div>
+                )}
               </div>
 
-              {/* Short Description */}
-              <div>
-                <h3 className="font-medium text-gray-900 mb-2">Mô tả sản phẩm</h3>
-                <div className="text-sm text-gray-600 line-clamp-4">
-                  {book.short_description}
+              {/* Quantity & Actions */}
+              <div className="space-y-4">
+                {/* Quantity Selector */}
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-medium">Số lượng:</span>
+                  <div className="flex items-center border rounded">
+                    <button 
+                      onClick={() => handleQuantityChange(-1)}
+                      className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100"
+                      disabled={quantity <= 1}
+                    >
+                      -
+                    </button>
+                    <input 
+                      type="number" 
+                      value={quantity}
+                      onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                      className="w-16 text-center border-0 focus:ring-0 h-8"
+                      min={1}
+                    />
+                    <button 
+                      onClick={() => handleQuantityChange(1)}
+                      className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <span className="text-sm text-gray-500">
+                    Tạm tính: <strong className="text-red-500">{(currentPrice * quantity).toLocaleString()}₫</strong>
+                  </span>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3">
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    className="flex-1 bg-red-500 hover:bg-red-600 text-white h-12"
+                    onClick={() => onAddToCart(book)}
+                  >
+                    Chọn mua
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="px-6 border-blue-500 text-blue-600 hover:bg-blue-50 h-12"
+                  >
+                    ♡
+                  </Button>
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full border-blue-500 text-blue-600 hover:bg-blue-50 h-12"
+                >
+                  Mua trước trả sau 0%
+                </Button>
+              </div>
+
+              {/* Shipping & Policy Info */}
+              <div className="mt-6 pt-6 border-t space-y-2">
+                <div className="flex items-center text-sm text-gray-600">
+                  <span className="mr-2">🚚</span>
+                  <span>Giao siêu tốc 2h, hoặc giao tiêu chuẩn từ 3 - 5 ngày</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <span className="mr-2">📦</span>
+                  <span>Đóng gói cẩn thận, giao hàng toàn quốc</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <span className="mr-2">↩️</span>
+                  <span>Đổi trả trong 30 ngày nếu sản phẩm lỗi</span>
+                </div>
+                <div className="flex items-center text-sm text-gray-600">
+                  <span className="mr-2">💳</span>
+                  <span>Hoàn 200% nếu hàng giả, nhận hàng trong 1h nếu đặt trước 11h</span>
                 </div>
               </div>
             </div>
 
-            {/* Column 3: Purchase Section (3/12) */}
-            <div className="lg:col-span-3 space-y-4">
-              {/* Store Info */}
-              <div className="border rounded-lg p-4 bg-blue-50">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center mr-2">
-                      <span className="text-white text-xs font-bold">T</span>
-                    </div>
-                    <span className="font-medium text-gray-900">Tiki Trading</span>
+            {/* Product Information */}
+            <div className="bg-white rounded-lg p-6">
+              <h3 className="text-lg font-bold mb-4">Thông tin sản phẩm</h3>
+              <div className="space-y-3">
+                {/* Author */}
+                {book.authors && book.authors.length > 0 && (
+                  <div className="flex py-2 border-b border-gray-100">
+                    <span className="w-32 text-sm text-gray-600">Tác giả</span>
+                    <span className="flex-1 text-sm font-medium">
+                      {book.authors[0].name}
+                    </span>
                   </div>
-                  {book.current_seller.is_best_store && (
-                    <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
-                      OFFICIAL
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Quantity Selector */}
-              <div>
-                <span className="text-sm font-medium text-gray-900 block mb-2">Số lượng</span>
-                <div className="flex items-center border rounded">
-                  <button className="px-3 py-2 text-gray-500 hover:bg-gray-100">-</button>
-                  <input 
-                    type="number" 
-                    defaultValue={1} 
-                    min={1}
-                    className="w-12 text-center border-0 focus:ring-0 py-2"
-                  />
-                  <button className="px-3 py-2 text-gray-500 hover:bg-gray-100">+</button>
-                </div>
-              </div>
-
-              {/* Price */}
-              <div>
-                <span className="text-sm text-gray-600 block mb-1">Tạm tính</span>
-                <div className="space-y-1">
-                  <div className="flex items-baseline space-x-2">
-                    <span className="text-2xl font-bold text-red-500">
-                      {formatPrice(currentPrice).replace('₫', '')}₫
-                    </span>
-                    {discountPercent > 0 && (
-                      <span className="text-sm text-gray-400 line-through">
-                        {formatPrice(originalPrice).replace('₫', '')}₫
+                )}
+                
+                {/* Specifications */}
+                {book.specifications?.map((spec) => 
+                  spec.attributes?.slice(0, 8).map((attr, index) => (
+                    <div key={index} className="flex py-2 border-b border-gray-100">
+                      <span className="w-32 text-sm text-gray-600">
+                        {attr.name || attr.code}
                       </span>
-                    )}
-                  </div>
-                  {discountPercent > 0 && (
-                    <span className="text-xs text-red-500">
-                      -{discountPercent}% {formatPrice(originalPrice - currentPrice).replace('₫', '')}₫
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="space-y-2">
-                <Button
-                  variant="primary"
-                  size="lg"
-                  className="w-full bg-red-500 hover:bg-red-600 text-white"
-                  onClick={() => onAddToCart(book)}
-                >
-                  Mua ngay
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full border-blue-500 text-blue-600 hover:bg-blue-50"
-                >
-                  Thêm vào giỏ
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full"
-                >
-                  Mua trước trả sau
-                </Button>
-              </div>
-
-              {/* Shipping Info */}
-              <div className="text-xs text-gray-600 space-y-1">
-                <div className="flex items-center">
-                  <span className="mr-1">🚚</span>
-                  Được giao bởi Tiki Trading
-                </div>
-                <div className="flex items-center">
-                  <span className="mr-1">📦</span>
-                  Giao hàng tiêu chuẩn: Thứ 3, 01/04
-                </div>
-                <div className="flex items-center">
-                  <span className="mr-1">💳</span>
-                  Được hoàn tiền 200% nếu là hàng giả
-                </div>
-                <div className="flex items-center">
-                  <span className="mr-1">↩️</span>
-                  Đổi trả miễn phí trong 30 ngày. Được đổi ý
-                </div>
+                      <span className="flex-1 text-sm font-medium">
+                        {attr.value}
+                      </span>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
         </div>
 
         {/* Product Details Tabs */}
-        <div className="bg-white rounded-lg shadow-sm mb-6">
+        <div className="mt-6 bg-white rounded-lg">
           {/* Tab Headers */}
           <div className="border-b">
-            <nav className="flex space-x-8 px-6">
+            <nav className="flex px-6">
               {[
                 { id: 'description', label: 'Mô tả sản phẩm' },
                 { id: 'specifications', label: 'Thông tin chi tiết' },
@@ -267,7 +280,7 @@ export function BookDetailsUI({ book, onAddToCart }: BookDetailsUIProps) {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`py-4 text-sm font-medium border-b-2 ${
+                  className={`py-4 px-6 text-sm font-medium border-b-2 ${
                     activeTab === tab.id
                       ? 'border-blue-500 text-blue-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -282,8 +295,12 @@ export function BookDetailsUI({ book, onAddToCart }: BookDetailsUIProps) {
           {/* Tab Content */}
           <div className="p-6">
             {activeTab === 'description' && (
-              <div className="prose max-w-none prose-sm">
-                <div dangerouslySetInnerHTML={{ __html: book.description }} />
+              <div className="prose max-w-none">
+                {book.description ? (
+                  <div dangerouslySetInnerHTML={{ __html: book.description }} />
+                ) : (
+                  <p className="text-gray-600">{book.short_description}</p>
+                )}
               </div>
             )}
 
@@ -291,12 +308,14 @@ export function BookDetailsUI({ book, onAddToCart }: BookDetailsUIProps) {
               <div className="space-y-6">
                 {book.specifications?.map((spec, index) => (
                   <div key={index}>
-                    <h3 className="font-medium text-gray-900 mb-3">{spec.name}</h3>
+                    <h4 className="font-medium text-gray-900 mb-3">{spec.name}</h4>
                     <div className="bg-gray-50 rounded-lg p-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {spec.attributes.map((attr, attrIndex) => (
-                          <div key={attrIndex} className="flex justify-between py-2 border-b border-gray-200 last:border-b-0">
-                            <span className="text-gray-600 text-sm">{attr.name}</span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+                        {spec.attributes?.map((attr, attrIndex) => (
+                          <div key={attrIndex} className="flex justify-between py-2">
+                            <span className="text-gray-600 text-sm">
+                              {attr.name || attr.code}
+                            </span>
                             <span className="font-medium text-sm">{attr.value}</span>
                           </div>
                         ))}
@@ -320,6 +339,6 @@ export function BookDetailsUI({ book, onAddToCart }: BookDetailsUIProps) {
           </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
