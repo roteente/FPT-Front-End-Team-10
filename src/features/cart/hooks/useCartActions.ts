@@ -1,30 +1,18 @@
-import { useAppDispatch } from '@/app/hooks'
-import { addToCart, removeFromCart, updateQuantity, clearCart } from '../model/cartSlice'
-import { CartItem } from '../model/types'
+import { useUpdateCartItemMutation, useRemoveCartItemMutation } from '../api/cartApi'
 
 export function useCartActions() {
-  const dispatch = useAppDispatch()
+  const [updateItem] = useUpdateCartItemMutation()
+  const [removeItem] = useRemoveCartItemMutation()
 
-  const add = (item: CartItem) => {
-    dispatch(addToCart(item))
+  const updateQuantity = (id: number, quantity: number) => {
+    if (quantity > 0) {
+      updateItem({ id, quantity })
+    } else {
+      removeItem(id)
+    }
   }
 
-  const remove = (id: number) => {
-    dispatch(removeFromCart(id))
-  }
+  const remove = (id: number) => removeItem(id)
 
-  const updateQty = (id: number, quantity: number) => {
-    dispatch(updateQuantity({ id, quantity }))
-  }
-
-  const clear = () => {
-    dispatch(clearCart())
-  }
-
-  return {
-    add,
-    remove,
-    updateQuantity: updateQty,
-    clear,
-  }
+  return { updateQuantity, remove }
 }

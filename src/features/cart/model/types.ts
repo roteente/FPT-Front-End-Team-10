@@ -1,11 +1,11 @@
 export interface CartItem {
   id: number
+  bookId: number
   title: string
-  price: number
   image: string
+  price: number
   quantity: number
 }
-
 export interface ShippingInfo {
   method: 'standard' | 'express'
   cost: number

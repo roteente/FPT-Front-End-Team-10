@@ -50,9 +50,9 @@ export function AuthButton({ onLoginClick }: AuthButtonProps) {
           className="flex flex-col items-center cursor-pointer hover:text-[#003EA1] transition-colors"
         >
           {user.avatar ? (
-            <img 
-              src={user.avatar} 
-              alt="Avatar" 
+            <img
+              src={user.avatar}
+              alt="Avatar"
               width="24"
               height="24"
               className="mb-1 rounded-full object-cover"
@@ -60,12 +60,12 @@ export function AuthButton({ onLoginClick }: AuthButtonProps) {
           ) : (
             <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center mb-1">
               <span className="text-white text-xs font-medium">
-                {user.name.charAt(0).toUpperCase()}
+                {(user?.name?.charAt(0) || '').toUpperCase()}
               </span>
             </div>
           )}
           <span className="text-xs text-[#808089] hover:text-[#003EA1] truncate max-w-16">
-            {user.name}
+            {user?.name || 'Người dùng'}
           </span>
         </button>
 
@@ -75,7 +75,7 @@ export function AuthButton({ onLoginClick }: AuthButtonProps) {
               <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
               <p className="text-xs text-gray-500 truncate">{user.email}</p>
             </div>
-            
+
             <Link
               to="/profile"
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
@@ -83,7 +83,7 @@ export function AuthButton({ onLoginClick }: AuthButtonProps) {
             >
               Thông tin cá nhân
             </Link>
-            
+
             <Link
               to="/orders"
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
@@ -91,7 +91,7 @@ export function AuthButton({ onLoginClick }: AuthButtonProps) {
             >
               Đơn hàng của tôi
             </Link>
-            
+
             <Link
               to="/settings"
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
@@ -99,7 +99,7 @@ export function AuthButton({ onLoginClick }: AuthButtonProps) {
             >
               Cài đặt
             </Link>
-            
+
             {user.role === 'admin' && (
               <Link
                 to="/admin"
@@ -109,7 +109,7 @@ export function AuthButton({ onLoginClick }: AuthButtonProps) {
                 Quản trị
               </Link>
             )}
-            
+
             <div className="border-t border-gray-100">
               <button
                 onClick={handleLogout}
@@ -125,13 +125,13 @@ export function AuthButton({ onLoginClick }: AuthButtonProps) {
   }
 
   return (
-    <button 
+    <button
       onClick={onLoginClick}
       className="flex flex-col items-center cursor-pointer hover:text-[#003EA1] transition-colors"
     >
-      <img 
-        src="/header_header_account_img.svg" 
-        alt="Tài khoản" 
+      <img
+        src="/header_header_account_img.svg"
+        alt="Tài khoản"
         width="24"
         height="24"
         className="mb-1"
