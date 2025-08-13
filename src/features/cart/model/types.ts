@@ -1,10 +1,12 @@
+import { Book } from '@/features/books/model/types'
 export interface CartItem {
   id: number
-  bookId: number
+  userId: number   
   title: string
-  image: string
   price: number
+  image: string
   quantity: number
+  book?: Book
 }
 export interface ShippingInfo {
   method: 'standard' | 'express'
