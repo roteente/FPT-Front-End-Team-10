@@ -4,11 +4,13 @@ import { Suspense } from 'react'
 import { store } from '@/app/store'
 import { MainLayout } from '@/ui/layout/MainLayout'
 import { AppRoutes } from '@/core/routing/routes'
+import { ScrollToTop } from '@/core/utils/ScrollToTop'
 
 function App() {
   return (
     <Provider store={store}>
       <BrowserRouter>
+        <ScrollToTop />
         <MainLayout>
           <Suspense fallback={
             <div className="min-h-screen flex items-center justify-center">
