@@ -3,14 +3,16 @@ import { Logo } from './header/Logo'
 import { SearchBox } from './header/SearchBox'
 import { CartButton } from './header/CartButton'
 import { AuthButton } from './header/AuthButton'
+import { useCartItemCount } from '@/features/cart/hooks/useCartItemCount'
 
 interface HeaderProps {
   onSearch?: (query: string) => void
-  cartItemsCount?: number
   onLoginClick?: () => void
 }
 
-export function Header({ onSearch, cartItemsCount = 0, onLoginClick }: HeaderProps) {
+export function Header({ onSearch, onLoginClick }: HeaderProps) {
+  const cartItemsCount = useCartItemCount()
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200" style={{ height: '88px' }}>
       <div className="max-w-[1440px] mx-auto px-6 h-full">

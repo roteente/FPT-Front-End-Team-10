@@ -1,5 +1,4 @@
-import { BookCard } from '../ui/BookCard'
-import { useBookCard } from '../hooks/useBookCard'
+import BookCard from '../ui/BookCard'
 import { Book } from '../api/bookApi'
 
 interface BookCardContainerProps {
@@ -7,14 +6,5 @@ interface BookCardContainerProps {
 }
 
 export function BookCardContainer({ book }: BookCardContainerProps) {
-  const { addToCart, quickView, addToWishlist } = useBookCard()
-
-  return (
-    <BookCard
-      book={book}
-      onAddToCart={addToCart}
-      onQuickView={quickView}
-      onWishlist={addToWishlist}
-    />
-  )
+  return <BookCard book={book} />
 }

@@ -35,7 +35,7 @@ export function useBooksQueryParams() {
     updateParams,
     setQuery: (q: string) => updateParams({ q, page: 1 }),
     setCategory: (category: string) => updateParams({ category, page: 1 }),
-    setSort: (sort: string, order: string) => updateParams({ sort, order, page: 1 }),
+    setSort: (sort: 'title' | 'price' | 'rating' | 'newest', order: 'asc' | 'desc') => updateParams({ sort, order, page: 1 }),
     setPage: (page: number) => updateParams({ page }),
   }
 }

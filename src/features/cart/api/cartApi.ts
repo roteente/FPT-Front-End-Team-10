@@ -1,19 +1,28 @@
 import { baseApi } from '@/core/api/baseApi'
 import { CartItem } from '../model/types'
-import { RootState } from '@/app/store'
-import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 
 export const cartApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getCart: builder.query<CartItem[], number | undefined>({
-      query: (userId) => `/cart?userId=${userId}&_expand=book`,
+      query: (userId) => `carts?userId=${userId}`,
       providesTags: ['Cart'],
+      transformResponse: (response: any[]) => {
+        // Chỉ trả về basic cart items, book info sẽ được fetch riêng
+        return response.map(item => ({
+          id: item.id,
+          userId: item.userId,
+          title: '', // Sẽ được update bằng hook khác
+          price: 0,
+          image: '',
+          quantity: item.quantity,
+          book: null as any // Temporary, sẽ được populate riêng
+        }))
+      }
     }),
 
-
-    addCartItem: builder.mutation<CartItem, Partial<CartItem>>({
+    addCartItem: builder.mutation<CartItem, { userId: number; bookId: number; quantity: number }>({
       query: (body) => ({
-        url: '/cart',
+        url: '/carts',
         method: 'POST',
         body,
       }),
@@ -22,7 +31,7 @@ export const cartApi = baseApi.injectEndpoints({
 
     updateCartItem: builder.mutation<void, { id: number; quantity: number }>({
       query: ({ id, quantity }) => ({
-        url: `/cart/${id}`,
+        url: `/carts/${id}`,
         method: 'PATCH',
         body: { quantity },
       }),
@@ -31,7 +40,7 @@ export const cartApi = baseApi.injectEndpoints({
 
     removeCartItem: builder.mutation<void, number>({
       query: (id) => ({
-        url: `/cart/${id}`,
+        url: `/carts/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Cart'],

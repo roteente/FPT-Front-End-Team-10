@@ -262,5 +262,13 @@
       "name": "Người dùng test",
       "avatar": "https://via.placeholder.com/100"
     }
+  ],
+  "carts": [
+    {
+      "id": 1,
+      "userId": 1,
+      "bookId": 1,
+      "quantity": 1
+    }
   ]
 }
