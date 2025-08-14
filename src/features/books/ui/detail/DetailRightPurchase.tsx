@@ -188,10 +188,11 @@ const DetailRightPurchase: React.FC<DetailRightPurchaseProps> = ({ book }) => {
         </button>
 
         {/* Add to Cart Button */}
+        {/* DEBUG: Made text-blue-600 important so it actually shows up */}
         <AddToCartButton
           bookId={typeof book.id === 'string' ? parseInt(book.id) : Number(book.id)}
           quantity={quantity}
-          className="w-full bg-white hover:bg-blue-50 text-blue-600 font-semibold border-2 transition-colors flex items-center justify-center"
+          className="w-full bg-white hover:bg-blue-50 !text-blue-600 font-semibold border-2 transition-colors flex items-center justify-center"
           style={{
             height: '48px',
             borderRadius: '8px',
