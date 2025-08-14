@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Button, ImageWithFallback, Rating } from '@/ui/primitives'
 import { formatPrice } from '@/core/utils/format'
 import { Book } from '../api/bookApi'
-
+import BookDetailRightImageSlider from '../containers/BookDetailRightImageSlider'
 interface BookDetailsUIProps {
   book: Book
   onAddToCart: (book: Book) => void
@@ -20,14 +20,44 @@ export function BookDetailsUI({ book, onAddToCart }: BookDetailsUIProps) {
     ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
     : 0
 
-  const imageUrl = book.images && book.images.length > 0 
+  const imageUrl = book.images && book.images.length > 0
     ? book.images[selectedImageIndex]?.large_url || book.images[selectedImageIndex]?.medium_url || book.images[selectedImageIndex]?.base_url
     : 'https://via.placeholder.com/400x600'
 
   const handleQuantityChange = (delta: number) => {
     setQuantity(Math.max(1, quantity + delta))
   }
-
+// Fake data
+const fakeBookData = {
+  BookName: "The Great Adventure",
+  BookImages: [
+    {
+      large_url: "https://picsum.photos/id/1015/1200/1600",
+      medium_url: "https://picsum.photos/id/1015/600/800",
+      base_url: "https://picsum.photos/id/1015/300/400",
+    },
+    {
+      large_url: "https://picsum.photos/id/1025/1200/1600",
+      medium_url: "https://picsum.photos/id/1025/600/800",
+      base_url: "https://picsum.photos/id/1025/300/400",
+    },
+    {
+      large_url: "https://picsum.photos/id/1035/1200/1600",
+      medium_url: "https://picsum.photos/id/1035/600/800",
+      base_url: "https://picsum.photos/id/1035/300/400",
+    },
+    {
+      large_url: "https://picsum.photos/id/1045/1200/1600",
+      medium_url: "https://picsum.photos/id/1045/600/800",
+      base_url: "https://picsum.photos/id/1045/300/400",
+    },
+    {
+      large_url: "https://picsum.photos/id/1055/1200/1600",
+      medium_url: "https://picsum.photos/id/1055/600/800",
+      base_url: "https://picsum.photos/id/1055/300/400",
+    },
+  ],
+};
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Breadcrumb */}
@@ -48,29 +78,28 @@ export function BookDetailsUI({ book, onAddToCart }: BookDetailsUIProps) {
       {/* Main Content */}
       <div className="max-w-[1392px] mx-auto px-6 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
+
           {/* Left Column: Product Images */}
-          <div className="lg:col-span-5">
-            <div className="bg-white rounded-lg p-6">
+          {/* <div className="lg:col-span-5">
+            <div className="bg-white rounded-lg p-6"> */}
               {/* Main Image */}
-              <div className="aspect-[3/4] bg-white rounded-lg mb-4 flex items-center justify-center overflow-hidden border">
+              {/* <div className="aspect-[3/4] bg-white rounded-lg mb-4 flex items-center justify-center overflow-hidden border">
                 <ImageWithFallback
                   src={imageUrl}
                   alt={book.name}
                   className="max-w-full max-h-full object-contain"
                 />
-              </div>
-              
+              </div> */}
+
               {/* Thumbnail Images */}
-              {book.images && book.images.length > 1 && (
+              {/* {book.images && book.images.length > 1 && (
                 <div className="flex gap-2 justify-center">
                   {book.images.slice(0, 5).map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImageIndex(index)}
-                      className={`w-16 h-20 rounded border-2 overflow-hidden ${
-                        selectedImageIndex === index ? 'border-blue-500' : 'border-gray-200'
-                      }`}
+                      className={`w-16 h-20 rounded border-2 overflow-hidden ${selectedImageIndex === index ? 'border-blue-500' : 'border-gray-200'
+                        }`}
                     >
                       <ImageWithFallback
                         src={image.small_url || image.thumbnail_url || image.base_url}
@@ -81,12 +110,17 @@ export function BookDetailsUI({ book, onAddToCart }: BookDetailsUIProps) {
                   ))}
                 </div>
               )}
-            </div>
-          </div>
+            </div> */}
+          {/* </div> */}
+
+          <BookDetailRightImageSlider
+            BookName={fakeBookData.BookName}
+            BookImages={fakeBookData.BookImages}
+          />
 
           {/* Right Column: Product Info & Purchase */}
           <div className="lg:col-span-7 space-y-6">
-            
+
             {/* Product Title & Rating */}
             <div className="bg-white rounded-lg p-6">
               <div className="flex items-start gap-4 mb-4">
@@ -111,7 +145,7 @@ export function BookDetailsUI({ book, onAddToCart }: BookDetailsUIProps) {
               <h1 className="text-2xl font-bold text-gray-900 mb-4 leading-tight">
                 {book.name}
               </h1>
-              
+
               {/* Rating & Reviews */}
               <div className="flex items-center gap-4 mb-4">
                 <div className="flex items-center">
@@ -160,21 +194,21 @@ export function BookDetailsUI({ book, onAddToCart }: BookDetailsUIProps) {
                 <div className="flex items-center gap-4">
                   <span className="text-sm font-medium">Số lượng:</span>
                   <div className="flex items-center border rounded">
-                    <button 
+                    <button
                       onClick={() => handleQuantityChange(-1)}
                       className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100"
                       disabled={quantity <= 1}
                     >
                       -
                     </button>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       value={quantity}
                       onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
                       className="w-16 text-center border-0 focus:ring-0 h-8"
                       min={1}
                     />
-                    <button 
+                    <button
                       onClick={() => handleQuantityChange(1)}
                       className="w-8 h-8 flex items-center justify-center text-gray-500 hover:bg-gray-100"
                     >
@@ -248,9 +282,9 @@ export function BookDetailsUI({ book, onAddToCart }: BookDetailsUIProps) {
                     </span>
                   </div>
                 )}
-                
+
                 {/* Specifications */}
-                {book.specifications?.map((spec) => 
+                {book.specifications?.map((spec) =>
                   spec.attributes?.slice(0, 8).map((attr, index) => (
                     <div key={index} className="flex py-2 border-b border-gray-100">
                       <span className="w-32 text-sm text-gray-600">
@@ -280,11 +314,10 @@ export function BookDetailsUI({ book, onAddToCart }: BookDetailsUIProps) {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`py-4 px-6 text-sm font-medium border-b-2 ${
-                    activeTab === tab.id
+                  className={`py-4 px-6 text-sm font-medium border-b-2 ${activeTab === tab.id
                       ? 'border-blue-500 text-blue-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700'
-                  }`}
+                    }`}
                 >
                   {tab.label}
                 </button>
