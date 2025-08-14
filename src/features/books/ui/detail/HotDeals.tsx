@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Book } from '../../api/bookApi';
+import { useNavigate } from "react-router-dom";
 
 interface HotDealsProps {
   deals: Book[];
@@ -10,11 +11,17 @@ const HotDeals: React.FC<HotDealsProps> = ({ deals }) => {
     return new Intl.NumberFormat('vi-VN').format(price);
   };
 
+  const navigate = useNavigate();
+  const handleClick = (id) => {
+    navigate(`/books/${id}`);
+  };
+
   return (
     <div className="grid grid-cols-4 gap-3">
       {deals.slice(0, 4).map((deal) => (
         <div 
           key={deal.id}
+          onClick = {() => handleClick(deal.id)}
           className="bg-white border border-red-200 rounded-lg p-3 hover:shadow-lg transition-all cursor-pointer group relative"
         >
           {/* Hot Deal Badge */}
