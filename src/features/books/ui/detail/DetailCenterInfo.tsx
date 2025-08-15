@@ -3,7 +3,7 @@ import type { Book } from '../../api/bookApi';
 import { useGetBooksQuery } from '../../api/bookApi';
 import RelatedProducts from './RelatedProducts';
 import HotDeals from './HotDeals';
-
+import ReadMoreHTML from '@/ui/primitives/ReadMoreHTML';
 interface DetailCenterInfoProps {
   book: Book;
 }
@@ -151,65 +151,23 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
       </div>
 
       {/* Hàng 3 - Product Description */}
-      <div
-        className="bg-white rounded-lg border border-gray-200 p-6 overflow-hidden"
-        style={{
-          width: '100%',
-          borderRadius: '8px',
-          opacity: 1
-        }}
-      >
-        <div className="h-full flex flex-col">
-          <h3 className="text-xl font-semibold text-gray-900 mb-5 flex-shrink-0">Mô tả sản phẩm</h3>
-          <div className="flex-1 relative">
-            <div
-              className={`prose max-w-none text-sm text-gray-700 leading-relaxed transition-all duration-300 ${showFullDescription ? 'overflow-y-auto h-full' : 'overflow-hidden'
-                }`}
-              style={{
-                height: showFullDescription ? 'calc(100% - 40px)' : '280px'
-              }}
-              dangerouslySetInnerHTML={{
-                __html: book.description || book.short_description || `
-                  <p>Cuốn sách sẽ giúp bạn trở nên giàu có, làm giàu cho cuộc sống của bạn trên tất cả các 
-                  phương diện của cuộc sống chứ không chỉ về tài chính và vật chất.</p>
-                  
-                  <p>Think and grow rich – 13 nguyên tắc nghĩ giàu, làm giàu là cuốn sách "chỉ dẫn" duy 
-                  nhất chỉ ra những nguồn lực bạn phải có để thành công. Mỗi chương trong cuốn sách 
-                  đều dễ cập đến bí quyết kiếm tiền, từ việc có niềm tin, có mong muốn đến những kiến 
-                  thức chuyên sâu, những ý tưởng, những kế hoạch, những cách đưa ra quyết định.</p>
-                  
-                  <p>"THINK AND GROW RICH"</p>
-                  <p>Mua nó...</p>
-                  <p>Bạn có một cuốn sách.</p>
-                  <p>Đọc nó...</p>
-                  <p>Bạn có một kế hoạch làm giàu</p>
-                  <p>Làm theo kế hoạch đó...</p>
-                  <p>Bạn có cả thế giới!"</p>
-                  
-                  <p>Theo quy luật tự nhiên, bí quyết này sẽ buộc bạn phải trả giá, nhưng cái giá phải trả 
-                  thấp hơn rất nhiều so với giá trị thực sự của nó. Nó không thể được định giá bởi 
-                  những người không muốn tìm kiếm nó. Bí quyết này không thể cho đi, nó không thể được 
-                  mua với tiền bạc vì nó đến với những người đã sẵn sàng cho nó theo một cách rất xác định.</p>
-                `
-              }}
-            />
-
-            {/* Gradient overlay khi chưa mở rộng */}
-            {!showFullDescription && (
-              <div className="absolute bottom-12 left-0 right-0 h-16 bg-gradient-to-t from-white via-white/90 to-transparent pointer-events-none"></div>
-            )}
-
-            <div className="absolute bottom-0 left-0 right-0 bg-white pt-3 flex-shrink-0">
-              <button
-                onClick={() => setShowFullDescription(!showFullDescription)}
-                className="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors duration-200"
-              >
-                {showFullDescription ? '▲ Thu gọn' : '▼ Xem thêm'}
-              </button>
+      {(book.description || book.short_description) && (
+        <div className="bg-white rounded-lg border border-gray-200 p-6 overflow-hidden">
+          <div className="h-full flex flex-col">
+            <h3 className="text-xl font-semibold text-gray-900 mb-5 flex-shrink-0">
+              Mô tả sản phẩm
+            </h3>
+            <div className="flex-1 relative">
+              <ReadMoreHTML
+                html={book.description || book.short_description || ""}
+                charLimit={300}
+                showMoreText="Xem thêm"
+                showLessText="Thu gọn"
+              />
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Hàng 4 - Related Products */}
       <div
