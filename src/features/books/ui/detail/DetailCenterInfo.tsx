@@ -80,9 +80,11 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
                 ))}
               </div>
             </div>
-            <span className="text-sm text-gray-500">
-              ({book.quantity_sold?.text || 'Đã bán 1000+'})
-            </span>
+            {book.quantity_sold?.text ?
+              <span className="text-sm text-gray-500">
+                {book.quantity_sold?.text}
+              </span>
+              : null}
           </div>
 
           {/* Price Display */}
@@ -123,13 +125,15 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
         }}
       >
         <div className="h-full flex flex-col">
-          <h3 className="text-xl font-semibold text-gray-900 mb-6 flex-shrink-0">Thông tin chi tiết</h3>
-          <div className="flex-1 space-y-0">
+          <h3 className="text-xl font-semibold text-gray-900 mb-6 flex-shrink-0">
+            Thông tin chi tiết
+          </h3>
+          <div className="flex-1 divide-y divide-gray-100">
             {book?.specifications?.map((spec, specIndex) =>
               spec?.attributes?.map((item, attrIndex) => (
                 <div
                   key={`${specIndex}-${attrIndex}`}
-                  className="flex gap-6 py-4 border-b border-gray-100"
+                  className="flex gap-6 py-4"
                 >
                   <span className="flex-1 text-sm text-gray-600 font-medium">
                     {item.name}

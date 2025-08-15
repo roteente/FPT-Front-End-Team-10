@@ -28,33 +28,23 @@ const DetailRightPurchase: React.FC<DetailRightPurchaseProps> = ({ book }) => {
   };
 
   return (
-    <div 
-      className="bg-white border border-gray-200 relative shadow-sm"
+    <div
+      className="bg-white border border-gray-200 relative shadow-sm p-4 "
       style={{
         width: '100%',
-        height: '450px',
         borderRadius: '8px',
         opacity: 1
       }}
     >
       {/* Tiki Trading Header */}
-      <div className="relative px-4 py-5 border-b border-gray-100">
-        {/* Tiki Logo */}
-        <div 
-          className="absolute"
-          style={{
-            width: '40px',
-            height: '40px',
-            top: '20px',
-            left: '16px'
-          }}
-        >
-          <img 
-            src="/tiki-logo.svg" 
+      <div className="flex items-center gap-3 pb-2 border-b border-gray-100">
+        {/* Logo */}
+        <div className="w-10 h-10 flex-shrink-0">
+          <img
+            src="/tiki-logo.svg"
             alt="Tiki"
             className="w-full h-full object-contain"
             onError={(e) => {
-              // Fallback to text if logo not found
               e.currentTarget.style.display = 'none';
               const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
               if (nextElement) {
@@ -62,7 +52,7 @@ const DetailRightPurchase: React.FC<DetailRightPurchaseProps> = ({ book }) => {
               }
             }}
           />
-          <div 
+          <div
             className="w-full h-full bg-blue-500 text-white text-xs font-bold rounded flex items-center justify-center"
             style={{ display: 'none' }}
           >
@@ -70,115 +60,82 @@ const DetailRightPurchase: React.FC<DetailRightPurchaseProps> = ({ book }) => {
           </div>
         </div>
 
-        {/* Tiki Trading Title */}
-        <div 
-          className="absolute text-gray-900 font-medium text-base"
-          style={{
-            top: '16px',
-            left: '68px'
-          }}
-        >
-          Tiki Trading
-        </div>
-
-        {/* Official Icon */}
-        <div 
-          className="absolute"
-          style={{
-            top: '40px',
-            left: '68px'
-          }}
-        >
-          <img 
-            src="/body/official.svg" 
-            alt="Official"
-            className="h-5 object-contain"
-            onError={(e) => {
-              // Fallback to text badge
-              e.currentTarget.style.display = 'none';
-              const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
-              if (nextElement) {
-                nextElement.style.display = 'inline-flex';
-              }
-            }}
-          />
-          <span 
-            className="inline-flex items-center px-2 py-1 bg-green-100 text-green-600 text-xs font-medium rounded border border-green-300"
-            style={{ display: 'none' }}
-          >
-            OFFICIAL
-          </span>
-        </div>
-      </div>
-
-      {/* Price Section */}
-      <div className="px-4 pt-5 pb-4">
-        <div className="flex items-center gap-3 mb-3">
-          <span className="text-3xl font-bold text-red-500">
-            {formatPrice(book.current_seller?.price || 0)}đ
-          </span>
-          {book.original_price && book.original_price > (book.current_seller?.price || 0) && (
-            <>
-              <span className="text-base text-gray-400 line-through">
-                {formatPrice(book.original_price)}đ
-              </span>
-              <span className="text-sm bg-red-100 text-red-600 px-2 py-1 rounded font-medium">
-                -{Math.round(((book.original_price - (book.current_seller?.price || 0)) / book.original_price) * 100)}%
-              </span>
-            </>
-          )}
-        </div>
-        <div className="text-sm text-gray-600">
-          {book.quantity_sold?.text || 'Đã bán 1000+'}
+        {/* Tên + Official */}
+        <div className="flex flex-col">
+          <span className="text-gray-900 font-medium text-base">Tiki Trading</span>
+          <div className="flex items-center gap-2 mt-1">
+            <img
+              src="/body/official.svg"
+              alt="Official"
+              className="h-5 object-contain"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
+                if (nextElement) {
+                  nextElement.style.display = 'inline-flex';
+                }
+              }}
+            />
+            <span
+              className="inline-flex items-center px-2 py-1 bg-green-100 text-green-600 text-xs font-medium rounded border border-green-300"
+              style={{ display: 'none' }}
+            >
+              OFFICIAL
+            </span>
+          </div>
         </div>
       </div>
 
       {/* Quantity Selector */}
-      <div className="px-4 pb-6">
-        <div className="text-sm text-gray-700 mb-4 font-medium">Số lượng</div>
-        <div className="flex items-center gap-4">
-          {/* Decrease Button */}
-          <button
-            onClick={() => handleQuantityChange(-1)}
-            disabled={quantity <= 1}
-            className="border bg-white hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed flex items-center justify-center text-gray-600 font-medium transition-colors"
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '6px',
-              borderColor: '#E5E7EB'
-            }}
-          >
-            −
-          </button>
+      <div className=" py-4 space-y-4">
+        {/* Số lượng */}
+        <div>
+          <div className="text-sm text-gray-700 mb-2 font-bold">Số lượng</div>
+          <div className="flex items-center gap-2">
+            {/* Nút giảm */}
+            <button
+              onClick={() => handleQuantityChange(-1)}
+              disabled={quantity <= 1}
+              className={`w-8 h-8 flex items-center justify-center rounded-md bg-white text-base font-medium transition
+                ${quantity <= 1
+                  ? 'border border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50'
+                  : 'border border-gray-300 text-gray-600 hover:bg-gray-50'
+                }`}
+            >
+              −
+            </button>
 
-          {/* Quantity Display */}
-          <div className="px-4 py-2 border border-gray-300 rounded-md min-w-[70px] text-center font-medium bg-gray-50">
-            {quantity}
+            {/* Hiển thị số lượng */}
+            <div className="h-8 px-2 py-1 min-w-[40px] text-center border border-gray-300 rounded-md font-medium">
+              {quantity}
+            </div>
+
+            {/* Nút tăng */}
+            <button
+              onClick={() => handleQuantityChange(1)}
+              className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md bg-white text-base text-gray-600 font-medium hover:bg-gray-50 transition"
+            >
+              +
+            </button>
           </div>
+        </div>
 
-          {/* Increase Button */}
-          <button
-            onClick={() => handleQuantityChange(1)}
-            className="border bg-white hover:bg-gray-50 flex items-center justify-center text-gray-600 font-medium transition-colors"
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '6px',
-              borderColor: '#E5E7EB'
-            }}
-          >
-            +
-          </button>
+        {/* Tạm tính */}
+        <div>
+          <div className="text-sm text-gray-700 mb-2 font-bold">Tạm tính</div>
+          <div className="text-2xl font-bold">
+            {book.list_price != null
+              ? (book.list_price * quantity).toLocaleString("vi-VN") + "₫"
+              : null}
+          </div>
         </div>
       </div>
-
       {/* Action Buttons */}
-      <div className="px-4 space-y-4">
+      <div className=" space-y-2">
         {/* Buy Now Button */}
         <button
           onClick={handleBuyNow}
-          className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold transition-colors flex items-center justify-center shadow-sm"
+          className="w-full bg-red-500 hover:bg-red-600 text-white transition-colors flex items-center justify-center shadow-sm"
           style={{
             height: '48px',
             borderRadius: '8px'
@@ -187,28 +144,29 @@ const DetailRightPurchase: React.FC<DetailRightPurchaseProps> = ({ book }) => {
           Mua ngay
         </button>
 
-        {/* Add to Cart Button */}
         <AddToCartButton
           bookId={typeof book.id === 'string' ? parseInt(book.id) : Number(book.id)}
           quantity={quantity}
-          className="w-full bg-white hover:bg-blue-50 text-blue-600 font-semibold border-2 transition-colors flex items-center justify-center"
+          className="w-full bg-white hover:bg-blue-50 border-1 transition-colors flex items-center justify-center"
           style={{
             height: '48px',
             borderRadius: '8px',
-            borderColor: '#0A68FF'
+            borderColor: 'rgba(10, 104, 255, 1)',
+            color: 'rgba(10, 104, 255, 1)'
           }}
         >
-          Thêm vào giỏ hàng
+          Thêm vào giỏ
         </AddToCartButton>
 
         {/* Buy Later Pay Later Button */}
         <button
           onClick={handleBuyLater}
-          className="w-full bg-white hover:bg-blue-50 text-blue-600 font-semibold border-2 transition-colors flex items-center justify-center"
+          className="w-full bg-white hover:bg-blue-50 text-blue-600 border-1 transition-colors flex items-center justify-center"
           style={{
             height: '48px',
             borderRadius: '8px',
-            borderColor: '#0A68FF'
+            borderColor: 'rgba(10, 104, 255, 1)',
+            color: 'rgba(10, 104, 255, 1)'
           }}
         >
           Mua trước trả sau
