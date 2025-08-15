@@ -1,3 +1,11 @@
+export interface Address {
+  street: string
+  district: string
+  city: string
+  addressType: 'Nhà' | 'Công ty' | 'Khác'
+  isDefault: boolean
+}
+
 export interface User {
   id: number
   email: string
@@ -5,7 +13,7 @@ export interface User {
   role: 'admin' | 'user'
   avatar?: string
   phone?: string
-  address?: string
+  address?: Address
   createdAt?: string
   updatedAt?: string
 }

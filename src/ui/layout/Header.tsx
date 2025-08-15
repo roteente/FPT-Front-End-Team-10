@@ -4,6 +4,8 @@ import { SearchBox } from './header/SearchBox'
 import { CartButton } from './header/CartButton'
 import { AuthButton } from './header/AuthButton'
 import { useCartItemCount } from '@/features/cart/hooks/useCartItemCount'
+import { useEffect } from 'react'
+import { useAppSelector } from '@/app/hooks'
 
 interface HeaderProps {
   onSearch?: (query: string) => void
@@ -11,7 +13,44 @@ interface HeaderProps {
 }
 
 export function Header({ onSearch, onLoginClick }: HeaderProps) {
-  const cartItemsCount = useCartItemCount()
+  const { itemCount: cartItemsCount, refetchCart } = useCartItemCount()
+  
+  // Watch for API mutations to detect cart changes
+  const mutations = useAppSelector((state) => state.api.mutations)
+  const cartEndpoints = ['addCartItem', 'updateCartItem', 'removeCartItem']
+  
+  // Refresh cart count when component mounts, when it gains focus, and after cart mutations
+  useEffect(() => {
+    refetchCart()
+    
+    // Set up a focus event listener to refresh cart count when the tab regains focus
+    const handleFocus = () => {
+      refetchCart()
+    }
+    
+    window.addEventListener('focus', handleFocus)
+    
+    // Clean up the event listener on unmount
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+    }
+  }, [refetchCart])
+  
+  // Refresh cart count when cart mutations occur
+  useEffect(() => {
+    // Check if any cart-related mutations have occurred
+    const hasMutation = Object.entries(mutations).some(
+      ([_, mutation]) => 
+        mutation && 
+        mutation.status === 'fulfilled' && 
+        mutation.endpointName && 
+        cartEndpoints.some(endpoint => mutation.endpointName.includes(endpoint))
+    )
+    
+    if (hasMutation) {
+      refetchCart()
+    }
+  }, [mutations, refetchCart])
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200" style={{ height: '88px' }}>

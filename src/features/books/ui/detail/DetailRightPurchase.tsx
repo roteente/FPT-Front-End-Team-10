@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AddToCartButton } from '@/features/cart';
+import { useAddCartItemMutation } from '@/features/cart/api/cartApi';
+import { useAuthVM } from '@/features/auth/hooks/useAuthVM';
 import type { Book } from '../../api/bookApi';
 
 interface DetailRightPurchaseProps {
@@ -7,6 +10,9 @@ interface DetailRightPurchaseProps {
 }
 
 const DetailRightPurchase: React.FC<DetailRightPurchaseProps> = ({ book }) => {
+  const navigate = useNavigate();
+  const { user } = useAuthVM();
+  const [addCartItem] = useAddCartItemMutation();
   const [quantity, setQuantity] = useState(1);
 
   const formatPrice = (price: number) => {
@@ -17,9 +23,27 @@ const DetailRightPurchase: React.FC<DetailRightPurchaseProps> = ({ book }) => {
     setQuantity(prev => Math.max(1, prev + delta));
   };
 
-  const handleBuyNow = () => {
-    console.log('Buy now:', { book: book.id, quantity });
-    // TODO: Implement buy now logic
+  const handleBuyNow = async () => {
+    // Check if user is logged in
+    if (!user) {
+      navigate('/login', { state: { from: `/books/${book.id}`, redirectAfterLogin: '/checkout' } });
+      return;
+    }
+
+    try {
+      // Add to cart first
+      await addCartItem({
+        userId: user.id,
+        bookId: typeof book.id === 'string' ? parseInt(book.id) : Number(book.id),
+        quantity: quantity
+      }).unwrap();
+
+      // Navigate to checkout
+      navigate('/checkout');
+    } catch (error) {
+      console.error('Error adding item to cart:', error);
+      alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng. Vui lòng thử lại.');
+    }
   };
 
   const handleBuyLater = () => {
