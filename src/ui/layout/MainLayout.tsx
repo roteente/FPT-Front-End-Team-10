@@ -4,6 +4,9 @@ import { Footer } from "./Footer";
 import { LoginModal } from "@/features/auth/components/LoginModal";
 import { RegisterModal } from "@/features/auth/components/RegisterModal";
 import { useAuthModal } from "@/features/auth/hooks/useAuthModal";
+import { useCartEmptyObserver } from "@/features/cart/hooks/useCartEmptyObserver";
+import { baseApi } from "@/core/api/baseApi";
+import { useAppDispatch } from "@/app/hooks";
 
 // ErrorBoundary toàn trang để không bao giờ trắng màn hình
 class GlobalErrorBoundary extends React.Component<
@@ -41,6 +44,7 @@ class GlobalErrorBoundary extends React.Component<
 }
 
 export function MainLayout({ children }: { children?: React.ReactNode }) {
+  const dispatch = useAppDispatch();
   const { 
     isLoginModalOpen, 
     isRegisterModalOpen, 
@@ -48,6 +52,12 @@ export function MainLayout({ children }: { children?: React.ReactNode }) {
     openRegisterModal, 
     closeModals 
   } = useAuthModal();
+  
+  // Use the cart empty observer to ensure UI is updated when cart becomes empty
+  useCartEmptyObserver(() => {
+    // Force a refresh of all Cart data to ensure the empty cart icon is shown
+    dispatch(baseApi.util.invalidateTags([{ type: 'Cart', id: 'LIST' }]));
+  });
 
   return (
     <div className="min-h-screen bg-[#F5F5FA]">

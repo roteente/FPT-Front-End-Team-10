@@ -5,12 +5,19 @@ export const cartApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getCart: builder.query<CartItem[], number | undefined>({
       query: (userId) => `carts?userId=${userId}`,
-      providesTags: ['Cart'],
+      providesTags: (result) => 
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'Cart' as const, id })),
+              { type: 'Cart', id: 'LIST' },
+            ]
+          : [{ type: 'Cart', id: 'LIST' }],
       transformResponse: (response: any[]) => {
         // Chỉ trả về basic cart items, book info sẽ được fetch riêng
         return response.map(item => ({
           id: item.id,
           userId: item.userId,
+          bookId: item.bookId,
           title: '', // Sẽ được update bằng hook khác
           price: 0,
           image: '',
@@ -26,7 +33,7 @@ export const cartApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: ['Cart'],
+      invalidatesTags: [{ type: 'Cart', id: 'LIST' }],
     }),
 
     updateCartItem: builder.mutation<void, { id: number; quantity: number }>({
@@ -35,7 +42,10 @@ export const cartApi = baseApi.injectEndpoints({
         method: 'PATCH',
         body: { quantity },
       }),
-      invalidatesTags: ['Cart'],
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'Cart', id },
+        { type: 'Cart', id: 'LIST' }
+      ],
     }),
 
     removeCartItem: builder.mutation<void, number>({
@@ -43,7 +53,10 @@ export const cartApi = baseApi.injectEndpoints({
         url: `/carts/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Cart'],
+      invalidatesTags: (result, error, id) => [
+        { type: 'Cart', id },
+        { type: 'Cart', id: 'LIST' }
+      ],
     }),
   }),
 })

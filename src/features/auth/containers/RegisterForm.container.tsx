@@ -20,13 +20,18 @@ export function RegisterFormContainer({ onSuccess }: RegisterFormContainerProps)
       dispatch(loginStart())
       
       const registerData = {
-        name: formData.name,
         email: formData.email,
         password: formData.password,
-        phone: formData.phone || undefined,
-      }
+        confirmPassword: formData.password, // Xác nhận mật khẩu khớp với password
+        role: 'user', // Vai trò mặc định là 'user'
+        name: formData.name ?? '', // Cung cấp chuỗi rỗng nếu name không được định nghĩa
+        phone: formData.phone ?? '', // Cung cấp chuỗi rỗng nếu phone không được định nghĩa
+        acceptTerms: formData.acceptTerms, // Gửi trạng thái đồng ý điều khoản
+      };
       
-      const result = await register(registerData).unwrap()
+      console.log('Payload gửi đi:', registerData);
+      const result = await register(registerData).unwrap();
+      console.log('Phản hồi từ backend:', result);
       
       // Store auth data
       setStorage('auth_token', result.token, 'sessionStorage')
