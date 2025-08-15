@@ -37,7 +37,7 @@ const TopSellingBooks = ({ books }: TopSellingBooksProps) => {
     <div 
       className="bg-white border border-[#EBEBF0]"
       style={{
-        width: '80%',
+        width: '100%',
         height: 'auto',
         opacity: 1,
       }}
