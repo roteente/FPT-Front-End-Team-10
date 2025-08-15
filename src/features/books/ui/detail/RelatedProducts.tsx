@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Book } from '../../api/bookApi';
+import { useNavigate } from "react-router-dom";
 
 interface RelatedProductsProps {
   products: Book[];
@@ -10,11 +11,17 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ products }) => {
     return new Intl.NumberFormat('vi-VN').format(price);
   };
 
+  const navigate = useNavigate();
+  const handleClick = (id) => {
+    navigate(`/books/${id}`);
+  };
+
   return (
     <div className="grid grid-cols-4 gap-3">
       {products.slice(0, 8).map((product) => (
         <div 
           key={product.id}
+          onClick={() => handleClick(product.id)}
           className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-lg transition-all cursor-pointer group"
         >
           <div className="aspect-[3/4] mb-3 bg-gray-100 rounded-md overflow-hidden">
