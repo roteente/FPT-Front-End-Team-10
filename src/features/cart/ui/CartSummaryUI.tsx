@@ -99,7 +99,12 @@ export function CartSummaryUI({
         </div>
         
         <button
-          onClick={onCheckout}
+          onClick={() => {
+            console.log("CartSummaryUI - Checkout button clicked");
+            if (selectedItemsCount > 0) {
+              onCheckout();
+            }
+          }}
           disabled={selectedItemsCount === 0}
           className={`w-full mt-4 py-3 px-4 rounded-lg font-medium text-white transition-colors ${
             selectedItemsCount > 0

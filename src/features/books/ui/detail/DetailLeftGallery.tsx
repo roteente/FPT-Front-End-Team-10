@@ -1,169 +1,155 @@
-import React, { useState } from 'react';
-import type { Book } from '../../api/bookApi';
-import { getBookThumbnail } from '../../utils/imageUtils';
+import React, { useState, CSSProperties } from "react";
+import { ImageWithFallback } from "@/ui/primitives";
+import { FaAngleRight } from "react-icons/fa6";
+import type { Book } from "../../api/bookApi";
 
-interface DetailLeftGalleryProps {
+type DetailLeftGalleryProps = {
   book: Book;
-}
+};
 
-const DetailLeftGallery: React.FC<DetailLeftGalleryProps> = ({ book }) => {
+function DetailLeftGallery({ book }: DetailLeftGalleryProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [imageLoading, setImageLoading] = useState(true);
-  const [imageError, setImageError] = useState(false);
-  const [isZoomed, setIsZoomed] = useState(false);
 
-  // Lấy danh sách ảnh từ book
-  const getBookImages = (): string[] => {
-    const images: string[] = [];
-    
-    // Thêm ảnh từ images array
-    if (book.images && book.images.length > 0) {
-      book.images.forEach(image => {
-        if (typeof image === 'string') {
-          images.push(image);
-        } else if (typeof image === 'object' && image !== null) {
-          const imageUrl = image.large_url || image.medium_url || image.base_url || image.thumbnail_url;
-          if (imageUrl) {
-            images.push(imageUrl);
-          }
-        }
-      });
-    }
-    
-    // Nếu không có ảnh nào, dùng thumbnail fallback
-    if (images.length === 0) {
-      images.push(getBookThumbnail(book));
-    }
-    
-    // Để demo, thêm vài ảnh mẫu nếu chỉ có 1 ảnh
-    if (images.length === 1) {
-      const baseImage = images[0];
-      images.push(
-        baseImage.replace('?random=', '?random=alt1_'),
-        baseImage.replace('?random=', '?random=alt2_'),
-        baseImage.replace('?random=', '?random=alt3_')
-      );
-    }
-    
-    return images;
-  };
+  // Chuẩn hóa images thành mảng object { large_url, medium_url, base_url }
+  const bookImages =
+    (book.images || []).map((img) =>
+      typeof img === "string" ? { base_url: img } : img
+    ) || [];
 
-  const bookImages = getBookImages();
-  const selectedImage = bookImages[selectedImageIndex];
-
-  const handleImageLoad = () => {
-    setImageLoading(false);
-    setImageError(false);
-  };
-
-  const handleImageError = () => {
-    setImageLoading(false);
-    setImageError(true);
-  };
-
-  const handleThumbnailClick = (index: number) => {
-    setSelectedImageIndex(index);
-    setImageLoading(true);
-    setImageError(false);
-  };
+  const imageUrl =
+    bookImages.length > 0
+      ? bookImages[selectedImageIndex]?.large_url ||
+        bookImages[selectedImageIndex]?.medium_url ||
+        bookImages[selectedImageIndex]?.base_url
+      : "https://via.placeholder.com/400x600";
 
   return (
-    <div 
-      className="flex flex-col"
-      style={{
-        width: '400px',
-        height: '513px',
-        borderRadius: '8px',
-        opacity: 1,
-        top: '40px',
-        left: '24px'
-      }}
-    >
-      {/* Ảnh chính */}
-      <div 
-        className="relative flex-1 mb-4 rounded-lg overflow-hidden border border-gray-200 bg-white cursor-zoom-in"
-        onMouseEnter={() => setIsZoomed(true)}
-        onMouseLeave={() => setIsZoomed(false)}
-      >
-        {imageLoading && (
-          <div className="absolute inset-0 bg-gray-100 flex items-center justify-center z-10">
-            <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    <div style={styles.colSpan}>
+      <div style={styles.container}>
+        <div style={styles.innerContainer}>
+          {/* Main Image */}
+          <div style={styles.mainImageWrapper}>
+            <ImageWithFallback
+              src={imageUrl}
+              alt={book.name}
+              style={styles.mainImage}
+            />
           </div>
-        )}
-        
-        {imageError ? (
-          <div className="w-full h-full bg-gray-50 flex items-center justify-center">
-            <div className="text-center text-gray-400">
-              <div className="text-6xl mb-4">📖</div>
-              <p className="text-sm">Không thể tải ảnh</p>
-            </div>
-          </div>
-        ) : (
-          <img
-            src={selectedImage}
-            alt={book.name}
-            className={`w-full h-full object-contain transition-all duration-500 ${
-              imageLoading ? 'opacity-0' : 'opacity-100'
-            } ${isZoomed ? 'scale-110' : 'scale-100'}`}
-            onLoad={handleImageLoad}
-            onError={handleImageError}
-          />
-        )}
-        
-        {/* Badge giảm giá (nếu có) */}
-        {book.original_price && book.current_seller?.price && book.current_seller.price < book.original_price && (
-          <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-sm font-medium z-20">
-            -{Math.round(((book.original_price - book.current_seller.price) / book.original_price) * 100)}%
-          </div>
-        )}
-        
-        {/* Zoom indicator */}
-        {!imageLoading && !imageError && (
-          <div className="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-            🔍 Hover để phóng to
-          </div>
-        )}
-      </div>
 
-      {/* Thumbnail gallery */}
-      {bookImages.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto pb-2">
-          {bookImages.map((image, index) => (
-            <button
-              key={index}
-              onClick={() => handleThumbnailClick(index)}
-              className={`
-                flex-shrink-0 w-16 h-16 rounded border-2 overflow-hidden transition-all duration-200 hover:shadow-md
-                ${selectedImageIndex === index 
-                  ? 'border-blue-500 shadow-md ring-2 ring-blue-200' 
-                  : 'border-gray-200 hover:border-gray-300'
-                }
-              `}
-            >
-              <img
-                src={image}
-                alt={`${book.name} - ảnh ${index + 1}`}
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
-                onError={(e) => {
-                  e.currentTarget.src = `https://picsum.photos/64/64?random=${book.id}_thumb_${index}`;
-                }}
-              />
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Image counter */}
-      <div className="mt-2 text-center text-sm text-gray-500">
-        <span className="inline-flex items-center gap-2">
-          <span>{selectedImageIndex + 1} / {bookImages.length}</span>
+          {/* Thumbnail Images */}
           {bookImages.length > 1 && (
-            <span className="text-xs text-gray-400">• Click thumbnail để xem</span>
+            <div style={styles.thumbnailContainer}>
+              {bookImages.slice(0, 5).map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedImageIndex(index)}
+                  style={{
+                    ...styles.thumbnailButton,
+                    borderColor:
+                      selectedImageIndex === index ? "#3b82f6" : "#e5e7eb",
+                  }}
+                >
+                  <ImageWithFallback
+                    src={image?.large_url || image?.medium_url || image.base_url}
+                    alt={`${book.name} ${index + 1}`}
+                    style={styles.thumbnailImage}
+                  />
+                </button>
+              ))}
+            </div>
           )}
-        </span>
+        </div>
+
+        {/* Bottom Button */}
+        <div style={styles.bottomButton}>
+          <div style={styles.bottomText}>
+            <ImageWithFallback
+              src={"/bookDetail-icon-left.png"}
+              style={styles.icon}
+            />
+            <span style={styles.textSpan}>Xem thêm</span>
+            Tóm tắt nội dung sách
+          </div>
+          <FaAngleRight style={styles.icon} />
+        </div>
       </div>
     </div>
   );
-};
+}
 
 export default DetailLeftGallery;
+
+const styles: { [key: string]: CSSProperties } = {
+  colSpan: {
+    gridColumn: "span 5",
+    width: "100%"
+  },
+  container: {
+    backgroundColor: "#ffffff",
+    borderRadius: "0.5rem",
+  },
+  innerContainer: {
+    padding: "1rem",
+  },
+  mainImageWrapper: {
+    aspectRatio: "3 / 4",
+    backgroundColor: "#ffffff",
+    borderRadius: "0.5rem",
+    marginBottom: "1rem",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    border: "0.0625rem solid #e5e7eb",
+  },
+  mainImage: {
+    maxWidth: "100%",
+    maxHeight: "100%",
+    objectFit: "contain",
+  },
+  thumbnailContainer: {
+    display: "flex",
+    gap: "0.5rem",
+    justifyContent: "center",
+  },
+  thumbnailButton: {
+    width: "4rem",
+    height: "5rem",
+    borderRadius: "0.375rem",
+    borderWidth: "0.125rem",
+    overflow: "hidden",
+    padding: 0,
+    cursor: "pointer",
+  },
+  thumbnailImage: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    padding: "0.3125rem",
+  },
+  bottomButton: {
+    borderTop: "0.0625rem solid rgba(235, 235, 240, 1)",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "1rem",
+    marginTop: "1rem",
+    width: "100%",
+  },
+  bottomText: {
+    display: "flex",
+    flexDirection: "row",
+    color: "black",
+    fontSize: "0.875rem",
+    gap: "0.3125rem",
+  },
+  textSpan: {
+    color: "rgba(128, 128, 137, 1)",
+  },
+  icon: {
+    width: "1.5rem",
+    height: "1.5rem",
+    color: "rgba(128, 128, 137, 1)",
+  },
+};

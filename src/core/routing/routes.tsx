@@ -6,10 +6,9 @@ import { AuthGuard } from '@/features/auth/components/AuthGuard'
 const Home = lazy(() => import('@/features/books/pages/Home'))
 const Detail = lazy(() => import('@/features/books/pages/Detail'))
 const Search = lazy(() => import('@/features/books/pages/Search'))
-const TestAPI = lazy(() => import('@/features/books/pages/TestAPI'))
 const Cart = lazy(() => import('@/features/cart/pages/Cart'))
-const CartDemo = lazy(() => import('@/features/cart/pages/CartDemo'))
-const CartTest = lazy(() => import('@/features/cart/pages/CartTest'))
+const Checkout = lazy(() => import('@/features/checkout/pages/Checkout'))
+const OrderSuccess = lazy(() => import('@/features/checkout/pages/OrderSuccess'))
 const Login = lazy(() => import('@/features/auth/pages/Login'))
 const Register = lazy(() => import('@/features/auth/pages/Register'))
 const NotFound = lazy(() => import('@/pages/NotFound'))
@@ -21,9 +20,7 @@ export function AppRoutes() {
       <Route path="/" element={<Home />} />
       <Route path="/search" element={<Search />} />
       <Route path="/books/:id" element={<Detail />} />
-      <Route path="/test-api" element={<TestAPI />} />
-      <Route path="/cart-demo" element={<CartDemo />} />
-      <Route path="/cart-test" element={<CartTest />} />
+
       
       {/* Auth routes - keep for direct access */}
       <Route 
@@ -49,6 +46,24 @@ export function AppRoutes() {
         element={
           <AuthGuard>
             <Cart />
+          </AuthGuard>
+        } 
+      />
+      
+      <Route 
+        path="/checkout" 
+        element={
+          <AuthGuard>
+            <Checkout />
+          </AuthGuard>
+        } 
+      />
+      
+      <Route 
+        path="/order-success" 
+        element={
+          <AuthGuard>
+            <OrderSuccess />
           </AuthGuard>
         } 
       />

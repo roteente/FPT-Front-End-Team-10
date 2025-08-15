@@ -1,17 +1,46 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { useGetCartQuery } from '../api/cartApi'
+import { useState, useMemo, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useCartActions } from '../hooks/useCartActions'
 import { useAuthVM } from '@/features/auth/hooks/useAuthVM'
 import { ImageWithFallback } from '@/ui/primitives'
+import { useCartWithBookDetails } from '../hooks/useCartWithBookDetails'
+import { AddressForm } from '@/features/auth/components/AddressForm'
+import { Address } from '@/features/auth/model/types'
+import { useUpdateUserAddressMutation } from '@/features/auth/api/userApi'
 
 export default function Cart() {
+  const navigate = useNavigate()
   const { user } = useAuthVM()
-  const { data: items = [], isLoading } = useGetCartQuery(user?.id, {
-    skip: !user?.id,
-  })
-  const { updateQuantity, remove } = useCartActions()
+  const { cartItems: serverItems = [], isLoading, refetch } = useCartWithBookDetails()
+  const { updateQuantity, remove, optimisticIds, getOptimisticQuantity, optimisticUpdates } = useCartActions()
   const [selectedItems, setSelectedItems] = useState<number[]>([])
+  const [showAddressForm, setShowAddressForm] = useState(false)
+  const [updateUserAddress, { isLoading: isUpdatingAddress }] = useUpdateUserAddressMutation()
+  
+  // Filter out items that are being optimistically removed and apply optimistic quantity updates
+  const items = useMemo(() => {
+    return serverItems
+      .filter(item => !optimisticIds.includes(item.id))
+      .map(item => {
+        const update = optimisticUpdates.find(u => u.id === item.id)
+        if (update) {
+          return { ...item, quantity: update.quantity }
+        }
+        return item
+      })
+  }, [serverItems, optimisticIds, optimisticUpdates])
+  
+  // Auto-refresh cart data when optimisticIds changes
+  useEffect(() => {
+    if (optimisticIds.length > 0) {
+      // Add a small delay to ensure server has time to process the delete
+      const timeoutId = setTimeout(() => {
+        refetch()
+      }, 500)
+      
+      return () => clearTimeout(timeoutId)
+    }
+  }, [optimisticIds, refetch])
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -28,6 +57,12 @@ export default function Cart() {
       setSelectedItems(prev => prev.filter(id => id !== itemId))
     }
   }
+  
+  // Update selectedItems when items change (for example when an item is removed)
+  useEffect(() => {
+    // Remove any selected items that no longer exist in the items array
+    setSelectedItems(prev => prev.filter(id => items.some(item => item.id === id)))
+  }, [items])
 
   const selectedItemsData = items.filter(item => selectedItems.includes(item.id))
   const subtotal = selectedItemsData.reduce((sum, item) => sum + (item.price * item.quantity), 0)
@@ -92,10 +127,33 @@ export default function Cart() {
 
         <div className="max-w-7xl mx-auto px-4 py-16">
           <div className="text-center">
-            <div className="w-32 h-32 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
-              <svg className="w-16 h-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6M20 13v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6" />
-              </svg>
+            <div className="w-40 h-40 mx-auto mb-6">
+              <img 
+                src="https://salt.tikicdn.com/ts/upload/43/fd/59/6c0f335100e0d9fab8e8736d6d2fbcad.png" 
+                alt="Giỏ hàng trống" 
+                className="w-full h-full object-contain"
+                onError={(e) => {
+                  // Fallback to the default SVG if image fails to load
+                  e.currentTarget.style.display = 'none';
+                  const parent = e.currentTarget.parentNode;
+                  if (parent) {
+                    const svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                    svgElement.setAttribute("class", "w-16 h-16 text-gray-400");
+                    svgElement.setAttribute("fill", "none");
+                    svgElement.setAttribute("viewBox", "0 0 24 24");
+                    svgElement.setAttribute("stroke", "currentColor");
+                    
+                    const pathElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    pathElement.setAttribute("stroke-linecap", "round");
+                    pathElement.setAttribute("stroke-linejoin", "round");
+                    pathElement.setAttribute("stroke-width", "1.5");
+                    pathElement.setAttribute("d", "M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6M20 13v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6");
+                    
+                    svgElement.appendChild(pathElement);
+                    parent.appendChild(svgElement);
+                  }
+                }}
+              />
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">Giỏ hàng trống</h3>
             <p className="text-gray-500 mb-8">Hãy thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm</p>
@@ -214,7 +272,7 @@ export default function Cart() {
                             <div className="flex items-center border border-gray-300 rounded-lg">
                               <button
                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                disabled={item.quantity <= 1}
+                                disabled={item.quantity <= 1 || optimisticUpdates.some(u => u.id === item.id)}
                                 className="p-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                               >
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -226,7 +284,8 @@ export default function Cart() {
                               </span>
                               <button
                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                className="p-2 hover:bg-gray-50"
+                                disabled={optimisticUpdates.some(u => u.id === item.id)}
+                                className="p-2 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                               >
                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -236,13 +295,25 @@ export default function Cart() {
 
                             {/* Delete button */}
                             <button
-                              onClick={() => remove(item.id)}
+                              onClick={() => {
+                                // First, remove this item from the selected items list
+                                setSelectedItems(prev => prev.filter(id => id !== item.id));
+                                // Then remove from cart
+                                remove(item.id);
+                              }}
                               className="p-2 text-gray-400 hover:text-red-500 transition-colors"
                               title="Xóa sản phẩm"
+                              disabled={optimisticIds.includes(item.id)}
                             >
-                              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
+                              {optimisticIds.includes(item.id) ? (
+                                <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                              ) : (
+                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                              )}
                             </button>
                           </div>
                         </div>
@@ -259,26 +330,61 @@ export default function Cart() {
             <div className="sticky top-4 space-y-6">
               {/* Thông tin giao hàng */}
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div className="flex items-start space-x-3 mb-4">
-                  <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                    </svg>
+                {showAddressForm ? (
+                  <div>
+                    <h3 className="font-medium text-gray-900 mb-4">Cập nhật địa chỉ giao hàng</h3>
+                    <AddressForm
+                      onSubmit={async (address: Address) => {
+                        if (user?.id) {
+                          try {
+                            await updateUserAddress({ userId: user.id, address }).unwrap();
+                            setShowAddressForm(false);
+                            alert('✅ Đã cập nhật địa chỉ giao hàng thành công!');
+                          } catch (error) {
+                            console.error('Failed to update address:', error);
+                            alert('❌ Không thể cập nhật địa chỉ. Vui lòng thử lại sau.');
+                          }
+                        } else {
+                          alert('❌ Vui lòng đăng nhập để cập nhật địa chỉ.');
+                        }
+                      }}
+                      onCancel={() => setShowAddressForm(false)}
+                    />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-medium text-gray-900 mb-1">Giao tới</h3>
-                    <p className="text-sm font-medium text-gray-900">Nguyễn Văn Quân | 0817246180</p>
-                    <p className="text-sm text-gray-600">
-                      <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs font-medium mr-2">
-                        Nhà
-                      </span>
-                      5/297 Vũ Hữu, Thanh Xuân, Hà Nội
-                    </p>
+                ) : (
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                      <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-medium text-gray-900 mb-1">Giao tới</h3>
+                      <p className="text-sm font-medium text-gray-900">{user?.name} | {user?.phone}</p>
+                      <p className="text-sm text-gray-600">
+                        {user?.address && (
+                          <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs font-medium mr-2">
+                            {user.address.addressType}
+                          </span>
+                        )}
+                        {user?.address 
+                          ? `${user.address.street}, ${user.address.district}, ${user.address.city}` 
+                          : (
+                            <span className="text-orange-500 font-medium">
+                              Chưa có địa chỉ - Vui lòng thêm địa chỉ giao hàng
+                            </span>
+                          )
+                        }
+                      </p>
+                    </div>
+                    <button 
+                      className="text-blue-600 text-sm font-medium hover:underline"
+                      onClick={() => setShowAddressForm(true)}
+                    >
+                      {user?.address ? 'Thay đổi' : 'Thêm địa chỉ'}
+                    </button>
                   </div>
-                  <button className="text-blue-600 text-sm font-medium hover:underline">
-                    Thay đổi
-                  </button>
-                </div>
+                )}
               </div>
 
               {/* Khuyến mãi */}
@@ -339,12 +445,23 @@ export default function Cart() {
                   </div>
                 </div>
                 
-                <button
-                  disabled={selectedItems.length === 0}
-                  className={`w-full mt-6 py-4 px-6 rounded-lg font-medium text-white transition-colors ${
+                <button 
+                  onClick={() => {
+                    console.log("Checkout button clicked");
+                    if (selectedItems.length > 0) {
+                      // Store selected items in sessionStorage before navigating
+                      const selectedCartItems = items.filter(item => selectedItems.includes(item.id));
+                      sessionStorage.setItem('selectedCartItems', JSON.stringify(selectedCartItems));
+                      
+                      // Make sure we navigate to the checkout page
+                      console.log("Navigating to checkout...");
+                      navigate('/checkout', { replace: true });
+                    }
+                  }}
+                  className={`block text-center w-full mt-6 py-4 px-6 rounded-lg font-medium text-white transition-colors ${
                     selectedItems.length > 0
                       ? 'bg-red-500 hover:bg-red-600'
-                      : 'bg-gray-300 cursor-not-allowed'
+                      : 'bg-gray-300 cursor-not-allowed pointer-events-none'
                   }`}
                 >
                   {selectedItems.length > 0 

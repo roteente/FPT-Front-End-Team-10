@@ -2,6 +2,7 @@ import { Book } from '@/features/books/model/types'
 export interface CartItem {
   id: number
   userId: number   
+  bookId: number
   title: string
   price: number
   image: string

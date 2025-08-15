@@ -13,6 +13,8 @@ export { useAddToCart } from './hooks/useAddToCart'
 export { useCartItemCount } from './hooks/useCartItemCount'
 export { useCartTotals } from './hooks/useCartTotals'
 export { useCartTotalsRTK } from './hooks/useCartTotalsRTK'
+export { useCartWithBookDetails } from './hooks/useCartWithBookDetails'
+export { useCartEmptyObserver } from './hooks/useCartEmptyObserver'
 
 // Cart API
 export { cartApi, useGetCartQuery, useAddCartItemMutation, useUpdateCartItemMutation, useRemoveCartItemMutation } from './api/cartApi'

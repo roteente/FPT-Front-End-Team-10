@@ -58,10 +58,7 @@ const Detail: React.FC = () => {
   }
 
   return (
-    <>
-      <DebugAuth />
-      <DetailBodyThreeCols book={book} />
-    </>
+  <DetailBodyThreeCols book={book} />
   );
 };
 

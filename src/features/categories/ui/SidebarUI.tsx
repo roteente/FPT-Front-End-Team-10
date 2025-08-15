@@ -46,10 +46,12 @@ function useExpandableCategories() {
 
     // Tìm các danh mục gốc (English Books và Sách tiếng Việt)
     const rootCats = allCategories.filter(cat => 
-      cat.name === "English Books" || 
-      cat.name === "Sách tiếng Việt" ||
-      cat.name === "Văn phòng phẩm" ||
-      cat.name === "Quà lưu niệm"
+      cat && typeof cat.name === 'string' && (
+        cat.name === "English Books" || 
+        cat.name === "Sách tiếng Việt" ||
+        cat.name === "Văn phòng phẩm" ||
+        cat.name === "Quà lưu niệm"
+      )
     );
     
     setRootCategories(rootCats);
@@ -62,13 +64,14 @@ function useExpandableCategories() {
     if (englishBooks) {
       // Lấy các danh mục tiếng Anh (không có từ "Sách", "Truyện", "Tác phẩm")
       const englishSubcats = allCategories.filter(cat => 
-        cat.id !== englishBooks.id && 
-        !cat.name.includes("Sách") && 
-        !cat.name.includes("Truyện") &&
-        !cat.name.includes("Tác phẩm") &&
-        cat.name !== "English Books" &&
-        cat.name !== "Văn phòng phẩm" &&
-        cat.name !== "Quà lưu niệm"
+  cat && typeof cat.name === 'string' &&
+  cat.id !== englishBooks.id && 
+  !cat.name.includes("Sách") && 
+  !cat.name.includes("Truyện") &&
+  !cat.name.includes("Tác phẩm") &&
+  cat.name !== "English Books" &&
+  cat.name !== "Văn phòng phẩm" &&
+  cat.name !== "Quà lưu niệm"
       );
       
       childCategoriesMap[englishBooks.id] = englishSubcats;
@@ -85,9 +88,10 @@ function useExpandableCategories() {
     if (vietnameseBooks) {
       // Lấy các danh mục tiếng Việt (có từ "Sách", "Truyện", "Tác phẩm")
       const vietnameseSubcats = allCategories.filter(cat => 
-        cat.id !== vietnameseBooks.id && 
-        (cat.name.includes("Sách") || cat.name.includes("Truyện") || cat.name.includes("Tác phẩm")) &&
-        cat.name !== "Sách tiếng Việt"
+  cat && typeof cat.name === 'string' &&
+  cat.id !== vietnameseBooks.id && 
+  (cat.name.includes("Sách") || cat.name.includes("Truyện") || cat.name.includes("Tác phẩm")) &&
+  cat.name !== "Sách tiếng Việt"
       );
       
       childCategoriesMap[vietnameseBooks.id] = vietnameseSubcats;
@@ -165,8 +169,8 @@ export default function SidebarUI({
                   <span>{c.name}{showCount ? ` (${subCategories[c.id]?.length || 0})` : ''}</span>
                   
                   {hasChildren && (
-                    <button
-                      type="button"
+                    <div
+                      role="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         toggleCategory(c.id);
@@ -178,7 +182,8 @@ export default function SidebarUI({
                       )}
                       style={{
                         transform: isExpanded ? 'rotate(-180deg)' : 'rotate(0deg)',
-                        borderRadius: '4px'
+                        borderRadius: '4px',
+                        cursor: 'pointer'
                       }}
                     >
                       <svg 
@@ -196,7 +201,7 @@ export default function SidebarUI({
                           strokeLinejoin="round"
                         />
                       </svg>
-                    </button>
+                    </div>
                   )}
                 </button>
               </div>
