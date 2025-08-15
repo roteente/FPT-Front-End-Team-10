@@ -2,7 +2,7 @@ export function Footer() {
   return (
     <footer className="bg-white border-t border-[#F2F2F2] py-8 mt-8">
       <div className="max-w-[1232px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           {/* Hỗ trợ khách hàng */}
           <div>
             <h3 className="text-[15px] font-medium text-[#38383D] mb-3">Hỗ trợ khách hàng</h3>
@@ -53,7 +53,7 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Phương thức thanh toán & Kết nối */}
+          {/* Phương thức thanh toán */}
           <div>
             <h3 className="text-[15px] font-medium text-[#38383D] mb-3">Phương thức thanh toán</h3>
             <div className="grid grid-cols-5 gap-2">
@@ -67,8 +67,16 @@ export function Footer() {
               <img src="/footer/thanh toán tiki.svg" alt="Tiki Pay" className="h-6" />
               <img src="/footer/vietel.svg" alt="Viettel Money" className="h-6" />
             </div>
-            
-            <h3 className="text-[15px] font-medium text-[#38383D] mt-8 mb-3">Kết nối với chúng tôi</h3>
+
+            <div className="inline-block">
+              <h3 className="text-[15px] font-medium text-[#38383D] mt-8 mb-3">Dịch vụ giao hàng</h3>
+              <img src="/footer/tikinow.svg" alt="TikiNOW" />
+            </div>
+          </div>
+
+          {/* Kết nối */}
+          <div>
+            <h3 className="text-[15px] font-medium text-[#38383D] mb-3">Kết nối với chúng tôi</h3>
             <div className="flex space-x-4">
               <img src="/footer/facebook.svg" alt="Facebook" className="h-6" />
               <img src="/footer/youtube.svg" alt="YouTube" className="h-6" />
@@ -78,10 +86,10 @@ export function Footer() {
             <h3 className="text-[15px] font-medium text-[#38383D] mt-8 mb-3">Tải ứng dụng trên điện thoại</h3>
             <div className="flex flex-col space-y-4">
               <div className="flex space-x-2">
-                <img src="/footer/tiki-qr.png" alt="QR Code" className="h-24" />
+                <img src="/footer/tiki-qr.png" alt="QR Code" className="h-18" />
                 <div className="flex flex-col space-y-2">
-                  <img src="/footer/appstore.png" alt="App Store" className="h-10" />
-                  <img src="/footer/ggplay.png" alt="Google Play" className="h-10" />
+                  <img src="/footer/appstore.png" alt="App Store" className="h-8" />
+                  <img src="/footer/ggplay.png" alt="Google Play" className="h-8" />
                 </div>
               </div>
             </div>
@@ -93,14 +101,6 @@ export function Footer() {
             <p className="mb-2">Trụ sở chính: Tòa nhà Viettel, Số 285, đường Cách Mạng Tháng 8, phường 12, quận 10, Thành phố Hồ Chí Minh</p>
             <p className="mb-2">Tiki nhận đặt hàng trực tuyến và giao hàng tận nơi, chưa hỗ trợ mua và nhận hàng trực tiếp tại văn phòng hoặc trung tâm xử lý đơn hàng</p>
             <p className="mb-2">© 2022 - Bản quyền của Công ty TNHH Ti Ki - Tiki.vn</p>
-          </div>
-        </div>
-        
-        {/* Dịch vụ giao hàng */}
-        <div className="mt-6 text-center">
-          <div className="inline-block">
-            <h3 className="text-[15px] font-medium text-[#38383D] mb-2">Dịch vụ giao hàng</h3>
-            <img src="/footer/tikinow.svg" alt="TikiNOW" className="h-8 mx-auto" />
           </div>
         </div>
       </div>
