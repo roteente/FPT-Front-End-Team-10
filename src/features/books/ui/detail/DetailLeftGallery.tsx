@@ -110,7 +110,6 @@ const styles: { [key: string]: CSSProperties } = {
   thumbnailContainer: {
     display: "flex",
     gap: "0.5rem",
-    justifyContent: "center",
   },
   thumbnailButton: {
     width: "4rem",
