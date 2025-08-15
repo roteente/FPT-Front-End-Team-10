@@ -26,7 +26,7 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
     const publisher = specs?.find(attr => attr.code === 'publisher')?.value || '1980 Books';
     const pages = specs?.find(attr => attr.code === 'pages')?.value || '263';
     const language = specs?.find(attr => attr.code === 'language')?.value || 'Tiếng Việt';
-    
+
     return { publisher, pages, language };
   };
 
@@ -34,19 +34,27 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
 
   // Get related products (exclude current book)
   const relatedProducts = booksData?.filter((b: Book) => b.id !== book.id) || [];
-  
+
   // Get hot deals (books with high discount)
-  const hotDeals = booksData?.filter((b: Book) => 
-    b.id !== book.id && 
-    b.original_price && 
+  const hotDeals = booksData?.filter((b: Book) =>
+    b.id !== book.id &&
+    b.original_price &&
     b.current_seller?.price &&
     ((b.original_price - b.current_seller.price) / b.original_price) > 0.2
   ) || [];
 
+  console.log(book);
+
+  function formatDate(dateTimeStr: string): string {
+  if (!dateTimeStr) return "";
+  return dateTimeStr.split(" ")[0]; // Lấy phần trước dấu cách
+}
+
+
   return (
     <div className="space-y-4">
       {/* Hàng 1 - Book Title and Rating */}
-      <div 
+      <div
         className="bg-white rounded-lg border border-gray-200 p-5 overflow-hidden"
         style={{
           width: '100%',
@@ -62,12 +70,12 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
               {getAuthorNames()}
             </span>
           </div>
-          
+
           {/* Tên sách */}
           <h1 className="text-lg font-semibold text-gray-900 mb-3 leading-6 line-clamp-2">
             {book.name}
           </h1>
-          
+
           {/* Rating và lượt bán */}
           <div className="flex items-center gap-4 mb-4">
             <div className="flex items-center gap-2">
@@ -76,13 +84,12 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
               </span>
               <div className="flex items-center">
                 {[...Array(5)].map((_, i) => (
-                  <span 
-                    key={i} 
-                    className={`text-sm ${
-                      i < Math.floor(book.rating_average || 4.8) 
-                        ? 'text-orange-400' 
+                  <span
+                    key={i}
+                    className={`text-sm ${i < Math.floor(book.rating_average || 4.8)
+                        ? 'text-orange-400'
                         : 'text-gray-300'
-                    }`}
+                      }`}
                   >
                     ★
                   </span>
@@ -110,7 +117,7 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
       </div>
 
       {/* Hàng 2 - Product Information Table */}
-      <div 
+      <div
         className="bg-white rounded-lg border border-gray-200 p-6"
         style={{
           width: '100%',
@@ -121,51 +128,28 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
         <div className="h-full flex flex-col">
           <h3 className="text-xl font-semibold text-gray-900 mb-6 flex-shrink-0">Thông tin chi tiết</h3>
           <div className="flex-1 space-y-0">
-            <div className="grid grid-cols-3 gap-6 py-4 border-b border-gray-100">
-              <span className="text-sm text-gray-600 font-medium">Bookcare</span>
-              <span className="text-sm text-gray-900 col-span-2">Có</span>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-6 py-4 border-b border-gray-100">
-              <span className="text-sm text-gray-600 font-medium">Công ty phát hành</span>
-              <span className="text-sm text-gray-900 col-span-2">1980 Books</span>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-6 py-4 border-b border-gray-100">
-              <span className="text-sm text-gray-600 font-medium">Ngày xuất bản</span>
-              <span className="text-sm text-gray-900 col-span-2">2024-07-01</span>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-6 py-4 border-b border-gray-100">
-              <span className="text-sm text-gray-600 font-medium">Kích thước</span>
-              <span className="text-sm text-gray-900 col-span-2">13 x 20.5 cm</span>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-6 py-4 border-b border-gray-100">
-              <span className="text-sm text-gray-600 font-medium">Dịch giả</span>
-              <span className="text-sm text-gray-900 col-span-2">Huyền Trang</span>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-6 py-4 border-b border-gray-100">
-              <span className="text-sm text-gray-600 font-medium">Loại bìa</span>
-              <span className="text-sm text-gray-900 col-span-2">Bìa mềm</span>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-6 py-4 border-b border-gray-100">
-              <span className="text-sm text-gray-600 font-medium">Số trang</span>
-              <span className="text-sm text-gray-900 col-span-2">263</span>
-            </div>
-            
-            <div className="grid grid-cols-3 gap-6 py-4">
-              <span className="text-sm text-gray-600 font-medium">Nhà xuất bản</span>
-              <span className="text-sm text-gray-900 col-span-2">Nhà Xuất Bản Dân Trí</span>
-            </div>
+
+            {book?.specifications?.map((spec, specIndex) =>
+              spec?.attributes?.map((item, attrIndex) => (
+                <div
+                  key={`${specIndex}-${attrIndex}`}
+                  className="grid grid-cols-3 gap-6 py-4 border-b border-gray-100"
+                >
+                  <span className="text-sm text-gray-600 font-medium">
+                    {item.name}
+                  </span>
+                  <span className="text-sm text-gray-900 col-span-2">
+                    {item.code == "publication_date" ? formatDate(item.value ?? "")  : item.value}
+                  </span>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
 
       {/* Hàng 3 - Product Description */}
-      <div 
+      <div
         className="bg-white rounded-lg border border-gray-200 p-6 overflow-hidden"
         style={{
           width: '100%',
@@ -176,11 +160,10 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
         <div className="h-full flex flex-col">
           <h3 className="text-xl font-semibold text-gray-900 mb-5 flex-shrink-0">Mô tả sản phẩm</h3>
           <div className="flex-1 relative">
-            <div 
-              className={`prose max-w-none text-sm text-gray-700 leading-relaxed transition-all duration-300 ${
-                showFullDescription ? 'overflow-y-auto h-full' : 'overflow-hidden'
-              }`}
-              style={{ 
+            <div
+              className={`prose max-w-none text-sm text-gray-700 leading-relaxed transition-all duration-300 ${showFullDescription ? 'overflow-y-auto h-full' : 'overflow-hidden'
+                }`}
+              style={{
                 height: showFullDescription ? 'calc(100% - 40px)' : '280px'
               }}
               dangerouslySetInnerHTML={{
@@ -208,12 +191,12 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
                 `
               }}
             />
-            
+
             {/* Gradient overlay khi chưa mở rộng */}
             {!showFullDescription && (
               <div className="absolute bottom-12 left-0 right-0 h-16 bg-gradient-to-t from-white via-white/90 to-transparent pointer-events-none"></div>
             )}
-            
+
             <div className="absolute bottom-0 left-0 right-0 bg-white pt-3 flex-shrink-0">
               <button
                 onClick={() => setShowFullDescription(!showFullDescription)}
@@ -227,7 +210,7 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
       </div>
 
       {/* Hàng 4 - Related Products */}
-      <div 
+      <div
         className="bg-white rounded-lg border border-gray-200 p-6"
         style={{
           width: '100%',
@@ -253,7 +236,7 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
       </div>
 
       {/* Hàng 5 - Hot Deals */}
-      <div 
+      <div
         className="bg-white rounded-lg border border-gray-200 p-6"
         style={{
           width: '100%',
