@@ -31,7 +31,7 @@ const DetailRightPurchase: React.FC<DetailRightPurchaseProps> = ({ book }) => {
     <div 
       className="bg-white border border-gray-200 relative shadow-sm"
       style={{
-        width: '360px',
+        width: '100%',
         height: '450px',
         borderRadius: '8px',
         opacity: 1

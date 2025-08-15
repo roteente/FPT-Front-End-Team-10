@@ -10,20 +10,20 @@ interface DetailBodyThreeColsProps {
 
 const DetailBodyThreeCols: React.FC<DetailBodyThreeColsProps> = ({ book }) => {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex gap-4 max-w-7xl mx-auto justify-center">
-        {/* Left Gallery - Fixed width & Sticky */}
-        <div className="flex-shrink-0 sticky top-4 self-start" style={{ width: '400px', height: 'fit-content' }}>
+    <div className="w-full px-4 py-8">
+      <div className="flex gap-4 w-full justify-center">
+        {/* Left Gallery */}
+        <div className="flex-1 sticky top-4 self-start">
           <DetailLeftGallery book={book} />
         </div>
         
-        {/* Center Info - Fixed width & Scrollable */}
-        <div className="flex-shrink-0" style={{ width: '584px' }}>
+        {/* Center Info */}
+        <div className="flex-2">
           <DetailCenterInfo book={book} />
         </div>
         
-        {/* Right Purchase - Fixed width & Sticky */}
-        <div className="flex-shrink-0 sticky top-4 self-start" style={{ width: '360px', height: 'fit-content' }}>
+        {/* Right Purchase */}
+        <div className="flex-1 sticky top-4 self-start">
           <DetailRightPurchase book={book} />
         </div>
       </div>

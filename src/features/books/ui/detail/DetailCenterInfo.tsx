@@ -49,8 +49,7 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
       <div 
         className="bg-white rounded-lg border border-gray-200 p-5 overflow-hidden"
         style={{
-          width: '584px',
-          height: '170px',
+          width: '100%',
           borderRadius: '8px',
           opacity: 1
         }}
@@ -114,8 +113,7 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
       <div 
         className="bg-white rounded-lg border border-gray-200 p-6"
         style={{
-          width: '584px',
-          minHeight: '450px',
+          width: '100%',
           borderRadius: '8px',
           opacity: 1
         }}
@@ -170,8 +168,7 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
       <div 
         className="bg-white rounded-lg border border-gray-200 p-6 overflow-hidden"
         style={{
-          width: '584px',
-          height: '400px',
+          width: '100%',
           borderRadius: '8px',
           opacity: 1
         }}
@@ -233,8 +230,7 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
       <div 
         className="bg-white rounded-lg border border-gray-200 p-6"
         style={{
-          width: '584px',
-          minHeight: '700px',
+          width: '100%',
           borderRadius: '8px',
           opacity: 1
         }}
@@ -260,8 +256,7 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
       <div 
         className="bg-white rounded-lg border border-gray-200 p-6"
         style={{
-          width: '584px',
-          minHeight: '600px',
+          width: '100%',
           borderRadius: '8px',
           opacity: 1
         }}
