@@ -12,25 +12,15 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const { data: booksData } = useGetBooksQuery();
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('vi-VN').format(price);
-  };
-
   const getAuthorNames = () => {
     return book.authors?.map(author => author.name).join(', ') || 'Chưa có thông tin';
   };
 
-  const getPublicationInfo = () => {
-    // Extract from specifications or use default
-    const specs = book.specifications?.[0]?.attributes;
-    const publisher = specs?.find(attr => attr.code === 'publisher')?.value || '1980 Books';
-    const pages = specs?.find(attr => attr.code === 'pages')?.value || '263';
-    const language = specs?.find(attr => attr.code === 'language')?.value || 'Tiếng Việt';
 
-    return { publisher, pages, language };
-  };
-
-  const publicationInfo = getPublicationInfo();
+  function formatDate(dateTimeStr: string): string {
+    if (!dateTimeStr) return "";
+    return dateTimeStr.split(" ")[0]; // Lấy phần trước dấu cách
+  }
 
   // Get related products (exclude current book)
   const relatedProducts = booksData?.filter((b: Book) => b.id !== book.id) || [];
@@ -43,12 +33,6 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
     ((b.original_price - b.current_seller.price) / b.original_price) > 0.2
   ) || [];
 
-  console.log(book);
-
-  function formatDate(dateTimeStr: string): string {
-  if (!dateTimeStr) return "";
-  return dateTimeStr.split(" ")[0]; // Lấy phần trước dấu cách
-}
 
 
   return (
@@ -87,8 +71,8 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
                   <span
                     key={i}
                     className={`text-sm ${i < Math.floor(book.rating_average || 4.8)
-                        ? 'text-orange-400'
-                        : 'text-gray-300'
+                      ? 'text-orange-400'
+                      : 'text-gray-300'
                       }`}
                   >
                     ★
@@ -103,15 +87,28 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
 
           {/* Price Display */}
           <div className="flex items-center gap-3">
-            <span className="text-3xl font-bold text-red-500">
-              77.000đ
-            </span>
-            <span className="text-lg text-gray-400 line-through">
-              110.000đ
-            </span>
-            <span className="bg-red-100 text-red-600 px-3 py-1 rounded text-sm font-medium">
-              -30%
-            </span>
+            {book.list_price !== undefined && (
+              <span className="text-3xl font-bold text-red-500">
+                {book.list_price.toLocaleString()}đ
+              </span>
+            )}
+
+            {book.list_price !== undefined &&
+              book.original_price !== undefined &&
+              book.list_price !== book.original_price && (
+                <div className="flex items-center gap-2">
+                  <span className="text-lg text-gray-400 line-through">
+                    {book.original_price.toLocaleString()}đ
+                  </span>
+                  <span className="bg-red-100 text-red-600 px-3 py-1 rounded text-sm font-medium">
+                    -
+                    {Math.round(
+                      ((book.original_price - book.list_price) / book.original_price) * 100
+                    )}
+                    %
+                  </span>
+                </div>
+              )}
           </div>
         </div>
       </div>
@@ -128,18 +125,19 @@ const DetailCenterInfo: React.FC<DetailCenterInfoProps> = ({ book }) => {
         <div className="h-full flex flex-col">
           <h3 className="text-xl font-semibold text-gray-900 mb-6 flex-shrink-0">Thông tin chi tiết</h3>
           <div className="flex-1 space-y-0">
-
             {book?.specifications?.map((spec, specIndex) =>
               spec?.attributes?.map((item, attrIndex) => (
                 <div
                   key={`${specIndex}-${attrIndex}`}
-                  className="grid grid-cols-3 gap-6 py-4 border-b border-gray-100"
+                  className="flex gap-6 py-4 border-b border-gray-100"
                 >
-                  <span className="text-sm text-gray-600 font-medium">
+                  <span className="flex-1 text-sm text-gray-600 font-medium">
                     {item.name}
                   </span>
-                  <span className="text-sm text-gray-900 col-span-2">
-                    {item.code == "publication_date" ? formatDate(item.value ?? "")  : item.value}
+                  <span className="flex-1 text-sm text-gray-900">
+                    {item.code === "publication_date"
+                      ? formatDate(item.value ?? "")
+                      : item.value}
                   </span>
                 </div>
               ))
