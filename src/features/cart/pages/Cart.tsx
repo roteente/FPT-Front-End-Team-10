@@ -16,7 +16,7 @@ export default function Cart() {
   const [selectedItems, setSelectedItems] = useState<number[]>([])
   const [showAddressForm, setShowAddressForm] = useState(false)
   const [updateUserAddress, { isLoading: isUpdatingAddress }] = useUpdateUserAddressMutation()
-  
+
   // Filter out items that are being optimistically removed and apply optimistic quantity updates
   const items = useMemo(() => {
     return serverItems
@@ -29,7 +29,7 @@ export default function Cart() {
         return item
       })
   }, [serverItems, optimisticIds, optimisticUpdates])
-  
+
   // Auto-refresh cart data when optimisticIds changes
   useEffect(() => {
     if (optimisticIds.length > 0) {
@@ -37,7 +37,7 @@ export default function Cart() {
       const timeoutId = setTimeout(() => {
         refetch()
       }, 500)
-      
+
       return () => clearTimeout(timeoutId)
     }
   }, [optimisticIds, refetch])
@@ -57,7 +57,7 @@ export default function Cart() {
       setSelectedItems(prev => prev.filter(id => id !== itemId))
     }
   }
-  
+
   // Update selectedItems when items change (for example when an item is removed)
   useEffect(() => {
     // Remove any selected items that no longer exist in the items array
@@ -102,8 +102,8 @@ export default function Cart() {
           <div className="text-6xl mb-4">🔒</div>
           <h2 className="text-2xl font-bold text-gray-700 mb-2">Cần đăng nhập</h2>
           <p className="text-gray-500 mb-6">Vui lòng đăng nhập để xem giỏ hàng của bạn</p>
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Về trang chủ
@@ -128,9 +128,9 @@ export default function Cart() {
         <div className="max-w-7xl mx-auto px-4 py-16">
           <div className="text-center">
             <div className="w-40 h-40 mx-auto mb-6">
-              <img 
-                src="https://salt.tikicdn.com/ts/upload/43/fd/59/6c0f335100e0d9fab8e8736d6d2fbcad.png" 
-                alt="Giỏ hàng trống" 
+              <img
+                src="https://salt.tikicdn.com/ts/upload/43/fd/59/6c0f335100e0d9fab8e8736d6d2fbcad.png"
+                alt="Giỏ hàng trống"
                 className="w-full h-full object-contain"
                 onError={(e) => {
                   // Fallback to the default SVG if image fails to load
@@ -142,13 +142,13 @@ export default function Cart() {
                     svgElement.setAttribute("fill", "none");
                     svgElement.setAttribute("viewBox", "0 0 24 24");
                     svgElement.setAttribute("stroke", "currentColor");
-                    
+
                     const pathElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
                     pathElement.setAttribute("stroke-linecap", "round");
                     pathElement.setAttribute("stroke-linejoin", "round");
                     pathElement.setAttribute("stroke-width", "1.5");
                     pathElement.setAttribute("d", "M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6M20 13v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6");
-                    
+
                     svgElement.appendChild(pathElement);
                     parent.appendChild(svgElement);
                   }
@@ -157,8 +157,8 @@ export default function Cart() {
             </div>
             <h3 className="text-2xl font-bold text-gray-900 mb-2">Giỏ hàng trống</h3>
             <p className="text-gray-500 mb-8">Hãy thêm sản phẩm vào giỏ hàng để tiếp tục mua sắm</p>
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="inline-flex items-center bg-red-500 text-white px-8 py-3 rounded-lg hover:bg-red-600 transition-colors font-medium"
             >
               <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -195,8 +195,8 @@ export default function Cart() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">GIỎ HÀNG ({items.length} sản phẩm)</h1>
-        
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">GIỎ HÀNG</h1>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main cart content */}
           <div className="lg:col-span-2">
@@ -211,7 +211,7 @@ export default function Cart() {
                     className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
                   />
                   <span className="font-medium text-gray-900">
-                    Chọn tất cả ({items.length} sản phẩm)
+                    Chọn tất cả
                   </span>
                 </label>
               </div>
@@ -243,7 +243,7 @@ export default function Cart() {
                         <h3 className="text-base font-medium text-gray-900 mb-2 line-clamp-2">
                           {item.title}
                         </h3>
-                        
+
                         <div className="flex items-center space-x-4 text-sm text-gray-500 mb-3">
                           <span className="flex items-center">
                             <svg className="w-4 h-4 mr-1 text-green-500" fill="currentColor" viewBox="0 0 20 20">
@@ -267,9 +267,9 @@ export default function Cart() {
                           </div>
 
                           {/* Số lượng và xóa */}
-                          <div className="flex items-center space-x-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-3 sm:space-y-0 mt-3 sm:mt-0">
                             {/* Quantity controls */}
-                            <div className="flex items-center border border-gray-300 rounded-lg">
+                            <div className="flex items-center border border-gray-300 rounded-lg w-fit mx-auto sm:mx-0">
                               <button
                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                 disabled={item.quantity <= 1 || optimisticUpdates.some(u => u.id === item.id)}
@@ -301,7 +301,7 @@ export default function Cart() {
                                 // Then remove from cart
                                 remove(item.id);
                               }}
-                              className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+                              className="p-2 text-gray-400 hover:text-red-500 transition-colors text-center"
                               title="Xóa sản phẩm"
                               disabled={optimisticIds.includes(item.id)}
                             >
@@ -310,7 +310,7 @@ export default function Cart() {
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                 </svg>
                               ) : (
-                                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg className="w-5 h-5 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                 </svg>
                               )}
@@ -324,7 +324,7 @@ export default function Cart() {
               </div>
             </div>
           </div>
-          
+
           {/* Sidebar thanh toán */}
           <div className="lg:col-span-1">
             <div className="sticky top-4 space-y-6">
@@ -367,8 +367,8 @@ export default function Cart() {
                             {user.address.addressType}
                           </span>
                         )}
-                        {user?.address 
-                          ? `${user.address.street}, ${user.address.district}, ${user.address.city}` 
+                        {user?.address
+                          ? `${user.address.street}, ${user.address.district}, ${user.address.city}`
                           : (
                             <span className="text-orange-500 font-medium">
                               Chưa có địa chỉ - Vui lòng thêm địa chỉ giao hàng
@@ -377,7 +377,7 @@ export default function Cart() {
                         }
                       </p>
                     </div>
-                    <button 
+                    <button
                       className="text-blue-600 text-sm font-medium hover:underline"
                       onClick={() => setShowAddressForm(true)}
                     >
@@ -415,10 +415,10 @@ export default function Cart() {
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Tạm tính ({selectedItems.length} sản phẩm)</span>
+                    <span className="text-gray-600">Tạm tính</span>
                     <span className="font-medium">{subtotal.toLocaleString('vi-VN')}₫</span>
                   </div>
-                  
+
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Phí vận chuyển</span>
                     <span className="font-medium">
@@ -429,11 +429,11 @@ export default function Cart() {
                       )}
                     </span>
                   </div>
-                  
+
                   <hr className="border-gray-200" />
-                  
+
                   <div className="flex justify-between">
-                    <span className="font-medium text-gray-900">Tổng tiền</span>
+                    <span className="font-medium text-gray-900">Tổng tiền thanh toán</span>
                     <div className="text-right">
                       <div className="text-xl font-bold text-red-500">
                         {total.toLocaleString('vi-VN')}₫
@@ -444,27 +444,26 @@ export default function Cart() {
                     </div>
                   </div>
                 </div>
-                
-                <button 
+
+                <button
                   onClick={() => {
                     console.log("Checkout button clicked");
                     if (selectedItems.length > 0) {
                       // Store selected items in sessionStorage before navigating
                       const selectedCartItems = items.filter(item => selectedItems.includes(item.id));
                       sessionStorage.setItem('selectedCartItems', JSON.stringify(selectedCartItems));
-                      
+
                       // Make sure we navigate to the checkout page
                       console.log("Navigating to checkout...");
                       navigate('/checkout', { replace: true });
                     }
                   }}
-                  className={`block text-center w-full mt-6 py-4 px-6 rounded-lg font-medium text-white transition-colors ${
-                    selectedItems.length > 0
-                      ? 'bg-red-500 hover:bg-red-600'
-                      : 'bg-gray-300 cursor-not-allowed pointer-events-none'
-                  }`}
+                  className={`block text-center w-full mt-6 py-4 px-6 rounded-lg font-medium text-white transition-colors ${selectedItems.length > 0
+                    ? 'bg-red-500 hover:bg-red-600'
+                    : 'bg-gray-300 cursor-not-allowed pointer-events-none'
+                    }`}
                 >
-                  {selectedItems.length > 0 
+                  {selectedItems.length > 0
                     ? `Mua hàng (${selectedItems.length})`
                     : 'Vui lòng chọn sản phẩm'
                   }
