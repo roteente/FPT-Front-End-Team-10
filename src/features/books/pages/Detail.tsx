@@ -1,64 +1,96 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useGetBookByIdQuery } from '../api/bookApi';
 import DetailBodyThreeCols from '../sections/detail/DetailBodyThreeCols';
-import DebugAuth from '@/features/auth/components/DebugAuth';
+
 
 const Detail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  console.log('Detail page - ID from params:', id);
-  const { data: book, isLoading, error } = useGetBookByIdQuery(id!);
-  
-  console.log('Detail page - API state:', { book, isLoading, error });
+  const navigate = useNavigate();
+  const [bookData, setBookData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [relatedBooks, setRelatedBooks] = useState([]);
+  const [hotDeals, setHotDeals] = useState([]);
+  const [quantity, setQuantity] = useState(1);
 
-  if (isLoading) {
+  // Function to fetch book details
+  const fetchBookDetails = async (bookId) => {
+    try {
+      setLoading(true);
+      console.log('Fetching book details for ID:', bookId);
+      
+      // Fetch specific book details
+      const response = await fetch(`http://localhost:3000/books/${bookId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log('Book data:', data);
+      setBookData(data);
+      
+      // Fetch all books for related products and hot deals
+      const allBooksResponse = await fetch(`http://localhost:3000/books`);
+      if (!allBooksResponse.ok) {
+        throw new Error(`HTTP error! status: ${allBooksResponse.status}`);
+      }
+      const allBooks = await allBooksResponse.json();
+      console.log('All books:', allBooks);
+      
+      // Filter related books (exclude current book)
+      const related = allBooks.filter(book => 
+        book.id !== parseInt(bookId)
+      ).slice(0, 8);
+      setRelatedBooks(related);
+      
+      // Get hot deals (first 8 books excluding current)
+      const hotDealsBooks = allBooks.filter(book => 
+        book.id !== parseInt(bookId)
+      ).slice(0, 8);
+      setHotDeals(hotDealsBooks);
+      
+    } catch (error) {
+      console.error('Error fetching book details:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle book click
+  const handleBookClick = (bookId) => {
+    window.scrollTo(0, 0);
+    navigate(`/books/${bookId}`);
+  };
+
+  // Handle quantity change
+  const handleQuantityChange = (change) => {
+    setQuantity(prev => Math.max(1, prev + change));
+  };
+
+  // Fetch data when component mounts or ID changes
+  useEffect(() => {
+    if (id) {
+      fetchBookDetails(id);
+    }
+  }, [id]);
+
+  if (loading) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-4">
-            <div className="w-full h-96 bg-gray-200 animate-pulse rounded-lg"></div>
-          </div>
-          <div className="lg:col-span-5">
-            <div className="space-y-4">
-              <div className="h-8 bg-gray-200 animate-pulse rounded"></div>
-              <div className="h-4 bg-gray-200 animate-pulse rounded w-3/4"></div>
-              <div className="h-4 bg-gray-200 animate-pulse rounded w-1/2"></div>
-            </div>
-          </div>
-          <div className="lg:col-span-3">
-            <div className="w-full h-64 bg-gray-200 animate-pulse rounded-lg"></div>
-          </div>
-        </div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
+        <div>Đang tải...</div>
       </div>
     );
   }
 
-  if (error) {
+  if (!bookData) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center py-16">
-          <div className="text-6xl mb-4">😔</div>
-          <h2 className="text-2xl font-bold text-gray-700 mb-2">Không tìm thấy sản phẩm</h2>
-          <p className="text-gray-500">Sản phẩm bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!book) {
-    return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center py-16">
-          <div className="text-6xl mb-4">📚</div>
-          <h2 className="text-2xl font-bold text-gray-700 mb-2">Không có dữ liệu</h2>
-          <p className="text-gray-500">Không thể tải thông tin sản phẩm.</p>
-        </div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
+        <div>Không tìm thấy sản phẩm</div>
       </div>
     );
   }
 
   return (
-  <DetailBodyThreeCols book={book} />
+  <DetailBodyThreeCols book={bookData} />
   );
 };
 

@@ -1,4 +1,5 @@
 import { useGetCategoriesQuery } from "../api/categoryApi";
+import { useBooksCategories } from "../hooks/useBooksCategories";
 import { CategoryStripUI } from "../ui/CategoryStripUI";
 
 interface CategoryStripContainerProps {
@@ -10,8 +11,11 @@ export function CategoryStripContainer({
   selectedCategory,
   onCategorySelect,
 }: CategoryStripContainerProps) {
-  // Get all categories to ensure we have the main root ones we need
-  const { data = [], isLoading, isError } = useGetCategoriesQuery();
+  // Get categories from books data
+  const { categories: bookCategories, isLoading, error } = useBooksCategories();
+  
+  // Fallback to API categories if needed
+  const { data: apiCategories = [] } = useGetCategoriesQuery();
 
   if (isLoading) {
     return (
@@ -29,7 +33,7 @@ export function CategoryStripContainer({
     );
   }
 
-  if (isError) {
+  if (error) {
     return (
       <div className="flex flex-col">
         <h2 className="text-xl font-medium mb-6">Khám phá theo danh mục</h2>
@@ -42,7 +46,7 @@ export function CategoryStripContainer({
 
   return (
     <CategoryStripUI
-      categories={data}
+      categories={bookCategories}
       selectedCategory={selectedCategory}
       onCategorySelect={onCategorySelect}
     />

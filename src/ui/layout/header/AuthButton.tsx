@@ -85,11 +85,19 @@ export function AuthButton({ onLoginClick }: AuthButtonProps) {
             </Link>
 
             <Link
+              to="/profile"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+              onClick={() => setIsDropdownOpen(false)}
+            >
+              Thông tin tài khoản
+            </Link>
+
+            <Link
               to="/orders"
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
               onClick={() => setIsDropdownOpen(false)}
             >
-              Đơn hàng của tôi
+              Quản lý đơn hàng
             </Link>
 
             <Link

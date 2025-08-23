@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import BookCategoriesSidebar from "../../categories/containers/BookCategoriesSidebar";
 import CategoryStripContainer from "../../categories/containers/CategoryStrip.container";
 import { useGetBooksQuery, Book } from "../api/bookApi";
@@ -10,6 +11,8 @@ const BookCarousel = React.lazy(() => import("../sections/BookCarousel").then(m 
 
 // Banner section
 function BannerSection({ books = [] }: { books: Book[] }) {
+  const navigate = useNavigate();
+  
   // Sắp xếp sách theo số lượng đã bán để lấy top bán chạy
   const topSellingBooks = React.useMemo(() => {
     return [...books]
@@ -29,6 +32,11 @@ function BannerSection({ books = [] }: { books: Book[] }) {
       .sort((a, b) => b.discountPercent - a.discountPercent)
       .slice(0, 3);
   }, [books]);
+
+  // Hàm xử lý click vào sách
+  const handleBookClick = (bookId: string | number) => {
+    navigate(`/books/${bookId}`);
+  };
 
   // Hàm lấy URL hình ảnh từ một sách
   const getBookImage = React.useCallback((book: Book) => {
@@ -95,7 +103,11 @@ function BannerSection({ books = [] }: { books: Book[] }) {
               topSellingBooks.map((book, index) => {
                 const discount = calculateDiscount(book.original_price, book.list_price);
                 return (
-                  <div key={book.id} className="relative w-[64px] h-[64px] border border-[#EBEBF0] rounded-[4px] overflow-hidden">
+                  <div 
+                    key={book.id} 
+                    className="relative w-[64px] h-[64px] border border-[#EBEBF0] rounded-[4px] overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+                    onClick={() => handleBookClick(book.id)}
+                  >
                     {discount > 0 && (
                       <div className="absolute top-0 right-0 bg-red-500 text-white text-xs px-1 rounded">
                         -{discount}%
@@ -160,7 +172,11 @@ function BannerSection({ books = [] }: { books: Book[] }) {
           <div className="flex space-x-3">
             {discountedBooks.length > 0 ? (
               discountedBooks.map((book) => (
-                <div key={book.id} className="relative w-[64px] h-[64px] border border-[#EBEBF0] rounded-[4px] overflow-hidden">
+                <div 
+                  key={book.id} 
+                  className="relative w-[64px] h-[64px] border border-[#EBEBF0] rounded-[4px] overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+                  onClick={() => handleBookClick(book.id)}
+                >
                   <div className="absolute top-0 right-0 bg-red-500 text-white text-xs px-1 rounded">
                     -{book.discountPercent}%
                   </div>
@@ -189,7 +205,8 @@ function BannerSection({ books = [] }: { books: Book[] }) {
 }
 
 export default function Home() {
-  const [selectedCategory, setSelectedCategory] = React.useState<string | undefined>(undefined);
+  const [selectedCategory, setSelectedCategory] = React.useState<string>('');
+  const [selectedSidebarCategory, setSelectedSidebarCategory] = React.useState<string>('');
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
   const [sortBy, setSortBy] = React.useState('popularity');
   const [sortOrder, setSortOrder] = React.useState('desc');
@@ -201,12 +218,37 @@ export default function Home() {
   });
   const { data: allBooks = [], isLoading, error } = useGetBooksQuery();
   
-  // Lọc sách dựa trên các filter
+  // Lọc sách dựa trên các filter và category
   const books = React.useMemo(() => {
     if (!allBooks?.length) return [];
     
     return allBooks.filter(book => {
-      // Nếu không có filter nào được chọn, trả về tất cả sách
+      // Filter theo category từ CategoryStrip
+      if (selectedCategory && selectedCategory !== '') {
+        const bookCategoryName = book.categories?.name;
+        
+        // Map slug về category name
+        if (selectedCategory === 'english-books' && !bookCategoryName?.toLowerCase().includes('english books')) {
+          return false;
+        }
+        if (selectedCategory === 'sach-tieng-viet' && !bookCategoryName?.toLowerCase().includes('sách tiếng việt')) {
+          return false;
+        }
+        if (selectedCategory === 'van-phong-pham' || selectedCategory === 'qua-luu-niem') {
+          // Không có sách cho 2 danh mục này
+          return false;
+        }
+      }
+      
+      // Filter theo sidebar category
+      if (selectedSidebarCategory && selectedSidebarCategory !== '') {
+        const bookCategoryName = book.categories?.name;
+        if (bookCategoryName !== selectedSidebarCategory) {
+          return false;
+        }
+      }
+      
+      // Nếu không có filter nào được chọn, trả về tất cả sách (sau khi filter category)
       if (!filters.fastDelivery && !filters.deal && !filters.freeShip && !filters.rating) {
         return true;
       }
@@ -246,7 +288,7 @@ export default function Home() {
       
       return shouldInclude;
     });
-  }, [allBooks, filters]);
+  }, [allBooks, filters, selectedCategory, selectedSidebarCategory]);
   
   // Debug: log dữ liệu để kiểm tra
   React.useEffect(() => {
@@ -317,8 +359,12 @@ export default function Home() {
           {/* Sidebar */}
           <aside className="hidden lg:block" style={{width: '240px'}}>
             <BookCategoriesSidebar
-              selectedCategory={selectedCategory}
-              onCategorySelect={setSelectedCategory}
+              selectedCategory={selectedSidebarCategory}
+              onCategorySelect={(categoryName) => {
+                setSelectedSidebarCategory(categoryName);
+                // Reset CategoryStrip khi chọn từ Sidebar
+                setSelectedCategory('');
+              }}
             />
           </aside>
 
@@ -337,7 +383,11 @@ export default function Home() {
           <div className="rounded-[8px] border border-[#EBEBF0] bg-white p-6">
             <CategoryStripContainer
               selectedCategory={selectedCategory}
-              onCategorySelect={setSelectedCategory}
+              onCategorySelect={(categorySlug) => {
+                setSelectedCategory(categorySlug);
+                // Reset sidebar category khi chọn từ CategoryStrip
+                setSelectedSidebarCategory('');
+              }}
             />
           </div>
 

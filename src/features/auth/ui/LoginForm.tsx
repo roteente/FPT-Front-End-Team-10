@@ -47,11 +47,14 @@ export function LoginForm({ onSubmit, isLoading, error }: LoginFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     
+    console.log('Login form submitted with data:', { email: formData.email, password: '***' })
+    
     // Validate form
     const emailError = validateEmail(formData.email)
     const passwordError = validatePassword(formData.password)
     
     if (emailError || passwordError) {
+      console.log('Form validation errors:', { emailError, passwordError })
       setFieldErrors({
         email: emailError,
         password: passwordError
@@ -59,6 +62,7 @@ export function LoginForm({ onSubmit, isLoading, error }: LoginFormProps) {
       return
     }
 
+    console.log('Form valid, calling onSubmit')
     onSubmit(formData.email, formData.password, formData.rememberMe)
   }
 

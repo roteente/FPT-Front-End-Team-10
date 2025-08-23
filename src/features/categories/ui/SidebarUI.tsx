@@ -42,7 +42,75 @@ function useExpandableCategories() {
 
   // Cấu trúc lại danh mục theo thiết kế
   React.useEffect(() => {
-    if (allCategories.length === 0) return;
+    if (allCategories.length === 0) {
+      // Tạo dữ liệu mock cho sidebar theo thiết kế
+      const mockCategories = [
+        {
+          id: 'english-books',
+          name: 'English Books',
+          slug: 'english-books',
+          isLeaf: false
+        },
+        {
+          id: 'sach-tieng-viet',
+          name: 'Sách tiếng Việt', 
+          slug: 'sach-tieng-viet',
+          isLeaf: false
+        },
+        {
+          id: 'van-phong-pham',
+          name: 'Văn phòng phẩm',
+          slug: 'van-phong-pham', 
+          isLeaf: false
+        },
+        {
+          id: 'qua-luu-niem',
+          name: 'Quà lưu niệm',
+          slug: 'qua-luu-niem',
+          isLeaf: false
+        }
+      ];
+
+      const mockSubCategories = {
+        'english-books': [
+          { id: 'art-photography', name: 'Art & Photography', slug: 'art-photography', isLeaf: true },
+          { id: 'biographies-memoirs', name: 'Biographies & Memoirs', slug: 'biographies-memoirs', isLeaf: true },
+          { id: 'business-economics', name: 'Business & Economics', slug: 'business-economics', isLeaf: true },
+          { id: 'childrens-books', name: "Children's Books", slug: 'childrens-books', isLeaf: true },
+          { id: 'dictionary', name: 'Dictionary', slug: 'dictionary', isLeaf: true },
+          { id: 'education-teaching', name: 'Education - Teaching', slug: 'education-teaching', isLeaf: true },
+          { id: 'fiction-literature', name: 'Fiction - Literature', slug: 'fiction-literature', isLeaf: true },
+          { id: 'magazines', name: 'Magazines', slug: 'magazines', isLeaf: true },
+          { id: 'medical-books', name: 'Medical Books', slug: 'medical-books', isLeaf: true },
+          { id: 'parenting-relationships', name: 'Parenting & Relationships', slug: 'parenting-relationships', isLeaf: true },
+          { id: 'reference', name: 'Reference', slug: 'reference', isLeaf: true },
+          { id: 'science-technology', name: 'Science - Technology', slug: 'science-technology', isLeaf: true },
+          { id: 'history-politics', name: 'History, Politics & Social Sciences', slug: 'history-politics', isLeaf: true },
+          { id: 'travel-holiday', name: 'Travel & Holiday', slug: 'travel-holiday', isLeaf: true },
+          { id: 'cookbooks', name: 'Cookbooks, Food & Wine', slug: 'cookbooks', isLeaf: true }
+        ],
+        'sach-tieng-viet': [
+          { id: 'kinh-te', name: 'Kinh tế', slug: 'kinh-te', isLeaf: true },
+          { id: 'van-hoc', name: 'Văn học', slug: 'van-hoc', isLeaf: true },
+          { id: 'tam-ly-ky-nang-song', name: 'Tâm lý - Kỹ năng sống', slug: 'tam-ly-ky-nang-song', isLeaf: true },
+          { id: 'nuoi-day-con', name: 'Nuôi dạy con', slug: 'nuoi-day-con', isLeaf: true },
+          { id: 'sach-hoc-ngoai-ngu', name: 'Sách học ngoại ngữ', slug: 'sach-hoc-ngoai-ngu', isLeaf: true },
+          { id: 'sach-thieu-nhi', name: 'Sách thiếu nhi', slug: 'sach-thieu-nhi', isLeaf: true }
+        ],
+        'van-phong-pham': [
+          { id: 'dung-cu-hoc-tap', name: 'Dụng cụ học tập', slug: 'dung-cu-hoc-tap', isLeaf: true },
+          { id: 'dung-cu-van-phong', name: 'Dụng cụ văn phòng', slug: 'dung-cu-van-phong', isLeaf: true }
+        ],
+        'qua-luu-niem': [
+          { id: 'qua-tang', name: 'Quà tặng', slug: 'qua-tang', isLeaf: true },
+          { id: 'luu-niem', name: 'Lưu niệm', slug: 'luu-niem', isLeaf: true }
+        ]
+      };
+
+      setRootCategories(mockCategories);
+      setSubCategories(mockSubCategories);
+      return;
+    }
 
     // Tìm các danh mục gốc (English Books và Sách tiếng Việt)
     const rootCats = allCategories.filter(cat => 

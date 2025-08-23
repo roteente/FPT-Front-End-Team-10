@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { Book } from '../../api/bookApi';
 
 interface RelatedProductsProps {
@@ -6,8 +7,15 @@ interface RelatedProductsProps {
 }
 
 const RelatedProducts: React.FC<RelatedProductsProps> = ({ products }) => {
+  const navigate = useNavigate();
+  
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('vi-VN').format(price);
+  };
+
+  const handleProductClick = (productId: string | number) => {
+    window.scrollTo(0, 0);
+    navigate(`/books/${productId}`);
   };
 
   return (
@@ -16,6 +24,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ products }) => {
         <div 
           key={product.id}
           className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-lg transition-all cursor-pointer group"
+          onClick={() => handleProductClick(product.id)}
         >
           <div className="aspect-[3/4] mb-3 bg-gray-100 rounded-md overflow-hidden">
             <img 

@@ -1,9 +1,14 @@
 export interface Address {
+  id?: number
   street: string
   district: string
   city: string
+  ward?: string
+  zipCode?: string
   addressType: 'Nhà' | 'Công ty' | 'Khác'
   isDefault: boolean
+  receiverName?: string
+  receiverPhone?: string
 }
 
 export interface User {
@@ -13,9 +18,15 @@ export interface User {
   role: 'admin' | 'user'
   avatar?: string
   phone?: string
-  address?: Address
+  dateOfBirth?: string
+  gender?: 'male' | 'female' | 'other'
+  addresses?: Address[]
+  defaultAddress?: Address
   createdAt?: string
   updatedAt?: string
+  isActive?: boolean
+  loyaltyPoints?: number
+  membershipLevel?: 'bronze' | 'silver' | 'gold' | 'platinum'
 }
 
 export interface AuthState {
@@ -34,6 +45,7 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
+  [x: string]: any
   user: User
   token: string
   refreshToken?: string
