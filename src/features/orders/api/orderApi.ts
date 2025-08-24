@@ -106,7 +106,7 @@ export interface Order {
 
 // Helper function để tạo mock data theo user hiện tại
 const createMockOrdersForUser = (user?: any) => {
-  const userName = user?.name || 'Người d';
+  const userName = user?.name || 'Người dùng';
   const userEmail = user?.email || 'user@example.com';
   const userPhone = user?.phone || '0900000000';
   const userId = user?.id || 1;

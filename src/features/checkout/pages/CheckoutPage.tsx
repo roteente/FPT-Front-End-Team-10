@@ -130,11 +130,11 @@ const CheckoutPage = () => {
   const defaultAddress = user?.defaultAddress 
   || user?.addresses?.find(addr => addr.isDefault);
 
-  const receiverName = defaultAddress?.receiverName || user?.name || "";
-  const receiverPhone = defaultAddress?.receiverPhone || user?.phone || "";
+  const receiverName = defaultAddress?.receiverName || user?.name || "Ng Minh";
+  const receiverPhone = defaultAddress?.receiverPhone || user?.phone || "0579842221";
   const receiverAddress = defaultAddress 
   ? `${defaultAddress.street}, ${defaultAddress.district}, ${defaultAddress.city}`
-  : "";
+  : "Mo Lao Ha Dong HN";
   const handleOrder = async (e: React.FormEvent) => {
     e.preventDefault();
 
