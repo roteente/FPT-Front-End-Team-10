@@ -9,7 +9,7 @@ export const baseApi = createApi({
       // Thêm token nếu có
       const token = (getState() as any).auth.token
       if (token) {
-        headers.set('authorization', `Bearer ${token}`)
+        headers.set('Authorization', `Bearer ${token}`)
       }
       return headers
     },

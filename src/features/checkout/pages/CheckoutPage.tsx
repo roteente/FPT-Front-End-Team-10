@@ -114,9 +114,9 @@ const CheckoutPage = () => {
 
   // Lấy thông tin user
   const { user } = useAuthVM();
-  const receiverName = user?.name || "";
-  const receiverPhone = user?.phone || "";
-  const receiverAddress = user?.address ? `${user.address.street}, ${user.address.district}, ${user.address.city}` : "";
+  //const receiverName = user?.name || "";
+  //const receiverPhone = user?.phone || "";
+  //const receiverAddress = user?.address ? `${user.address.street}, ${user.address.district}, ${user.address.city}` : "";
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [note, setNote] = useState("");
   const [shippingMethod, setShippingMethod] = useState("fast");
@@ -130,9 +130,12 @@ const CheckoutPage = () => {
   const shippingDiscount = shippingMethod === "fast" ? 25000 : 0;
   const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subtotal + shippingFee - directDiscount - shippingDiscount;
-
+  const receiverName="Minh";
+  const receiverAddress="HD HN";
+  const receiverPhone="05972332221";
   const handleOrder = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (!receiverName || !receiverAddress || !receiverPhone) {
       alert("Vui lòng nhập đầy đủ thông tin nhận hàng.");
       return;
@@ -334,7 +337,7 @@ const CheckoutPage = () => {
                       
                       {/* Số lượng */}
                       <div className="text-gray-500 text-xs mb-2">
-                        SL: <span className="font-medium text-black">x{item.quantity || 1}</span>
+                        Số Lượng: <span className="font-medium text-black">x{item.quantity || 1}</span>
                       </div>
                       
                       {/* Giá với debug info */}
@@ -384,7 +387,7 @@ const CheckoutPage = () => {
               </label>
             </div>
             {/* Ưu đãi thanh toán thẻ */}
-            <div className="border-t border-[#E0E0E0] pt-4">
+            {/* <div className="border-t border-[#E0E0E0] pt-4">
               <div className="text-sm text-[#666] mb-4 font-medium">Ưu đãi thanh toán thẻ</div>
               <div className="grid grid-cols-3 gap-3">
                 {[
@@ -405,7 +408,7 @@ const CheckoutPage = () => {
                   </div>
                 ))}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         {/* Cột phải - Sidebar */}
@@ -428,7 +431,7 @@ const CheckoutPage = () => {
             </div>
             
             {/* Tiki Khuyến Mãi */}
-            <div className="bg-white rounded-lg p-4 shadow-sm border border-[#E0E0E0]">
+            {/* <div className="bg-white rounded-lg p-4 shadow-sm border border-[#E0E0E0]">
               <div className="font-medium mb-3 text-[16px] text-[#242424]">Tiki Khuyến Mãi</div>
               <div className="flex items-center justify-between p-3 bg-[#F8F9FA] rounded-lg border border-[#E0E0E0]">
                 <div className="flex items-center gap-2">
@@ -437,7 +440,7 @@ const CheckoutPage = () => {
                 </div>
                 <button className="text-[#0B74E5] text-sm font-medium hover:underline">Chọn hoặc nhập khuyến mãi khác</button>
               </div>
-            </div>
+            </div> */}
             
             {/* Đơn hàng */}
             <div className="bg-white rounded-lg p-4 shadow-sm border border-[#E0E0E0]">
