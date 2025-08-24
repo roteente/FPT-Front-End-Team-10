@@ -1,6 +1,3 @@
-
-
-
 import React, { useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -130,9 +127,14 @@ const CheckoutPage = () => {
   const shippingDiscount = shippingMethod === "fast" ? 25000 : 0;
   const subtotal = cartItemsWithDetails.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const total = subtotal + shippingFee - directDiscount - shippingDiscount;
-  const receiverName="Minh";
-  const receiverAddress="HD HN";
-  const receiverPhone="05972332221";
+  const defaultAddress = user?.defaultAddress 
+  || user?.addresses?.find(addr => addr.isDefault);
+
+  const receiverName = defaultAddress?.receiverName || user?.name || "";
+  const receiverPhone = defaultAddress?.receiverPhone || user?.phone || "";
+  const receiverAddress = defaultAddress 
+  ? `${defaultAddress.street}, ${defaultAddress.district}, ${defaultAddress.city}`
+  : "";
   const handleOrder = async (e: React.FormEvent) => {
     e.preventDefault();
 

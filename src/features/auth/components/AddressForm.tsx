@@ -9,19 +9,23 @@ interface AddressFormProps {
 
 export function AddressForm({ onSubmit, onCancel }: AddressFormProps) {
   const { user } = useAuthVM()
+  const defaultAddress = user?.defaultAddress || user?.addresses?.[0]
+
   const [formData, setFormData] = useState<Address>({
-    street: user?.address?.street || '',
-    district: user?.address?.district || '',
-    city: user?.address?.city || '',
-    addressType: user?.address?.addressType || 'Nhà',
-    isDefault: user?.address?.isDefault || true
+    street: defaultAddress?.street || '',
+    district: defaultAddress?.district || '',
+    city: defaultAddress?.city || '',
+    addressType: defaultAddress?.addressType || 'Nhà',
+    isDefault: defaultAddress?.isDefault ?? true,
+    receiverName: defaultAddress?.receiverName || user?.name || '',
+    receiverPhone: defaultAddress?.receiverPhone || user?.phone || ''
   })
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target
     const isCheckbox = type === 'checkbox'
     const inputValue = isCheckbox ? (e.target as HTMLInputElement).checked : value
-    
+
     setFormData({
       ...formData,
       [name]: inputValue
