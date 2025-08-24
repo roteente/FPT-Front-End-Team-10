@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Book } from '../../api/bookApi';
+import { useNavigate } from "react-router-dom";
 
 interface HotDealsProps {
   deals: Book[];
@@ -14,7 +15,6 @@ const HotDeals: React.FC<HotDealsProps> = ({ deals }) => {
   };
 
   const handleDealClick = (dealId: string | number) => {
-    window.scrollTo(0, 0);
     navigate(`/books/${dealId}`);
   };
 

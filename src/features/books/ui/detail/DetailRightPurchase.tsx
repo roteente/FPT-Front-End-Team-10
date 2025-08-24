@@ -177,7 +177,7 @@ const DetailRightPurchase: React.FC<DetailRightPurchaseProps> = ({ book }) => {
         >
           Mua ngay
         </button>
-
+        
         <AddToCartButton
           bookId={typeof book.id === 'string' ? parseInt(book.id) : Number(book.id)}
           quantity={quantity}

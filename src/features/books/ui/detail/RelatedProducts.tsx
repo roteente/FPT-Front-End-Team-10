@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Book } from '../../api/bookApi';
+import { useNavigate } from "react-router-dom";
 
 interface RelatedProductsProps {
   products: Book[];
@@ -14,7 +15,6 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ products }) => {
   };
 
   const handleProductClick = (productId: string | number) => {
-    window.scrollTo(0, 0);
     navigate(`/books/${productId}`);
   };
 
