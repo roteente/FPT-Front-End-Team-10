@@ -6,6 +6,7 @@ import { AuthButton } from './header/AuthButton'
 import { useCartItemCount } from '@/features/cart/hooks/useCartItemCount'
 import { useEffect } from 'react'
 import { useAppSelector } from '@/app/hooks'
+import { useAuthVM } from '@/features/auth/hooks/useAuthVM'
 
 interface HeaderProps {
   onSearch?: (query: string) => void
@@ -14,30 +15,34 @@ interface HeaderProps {
 
 export function Header({ onSearch, onLoginClick }: HeaderProps) {
   const { itemCount: cartItemsCount, refetchCart } = useCartItemCount()
+  const { user, isAuthenticated } = useAuthVM();
   
   // Watch for API mutations to detect cart changes
   const mutations = useAppSelector((state) => state.api.mutations)
-  const cartEndpoints = ['addCartItem', 'updateCartItem', 'removeCartItem']
   
   // Refresh cart count when component mounts, when it gains focus, and after cart mutations
   useEffect(() => {
-    refetchCart()
+    if (user && isAuthenticated) {
+      refetchCart();
+    }
     
     // Set up a focus event listener to refresh cart count when the tab regains focus
     const handleFocus = () => {
-      refetchCart()
+      if (user && isAuthenticated) {
+        refetchCart();
+      }
     }
-    
     window.addEventListener('focus', handleFocus)
     
     // Clean up the event listener on unmount
     return () => {
       window.removeEventListener('focus', handleFocus)
     }
-  }, [refetchCart])
+  }, [refetchCart, user, isAuthenticated])
   
   // Refresh cart count when cart mutations occur
   useEffect(() => {
+    const cartEndpoints = ['addCartItem', 'updateCartItem', 'removeCartItem']
     // Check if any cart-related mutations have occurred
     const hasMutation = Object.entries(mutations).some(
       ([_, mutation]) => 
@@ -46,11 +51,10 @@ export function Header({ onSearch, onLoginClick }: HeaderProps) {
         mutation.endpointName && 
         cartEndpoints.some(endpoint => mutation.endpointName.includes(endpoint))
     )
-    
-    if (hasMutation) {
-      refetchCart()
+    if (hasMutation && user && isAuthenticated) {
+      refetchCart();
     }
-  }, [mutations, refetchCart])
+  }, [mutations, refetchCart, user, isAuthenticated])
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200" style={{ height: '88px' }}>

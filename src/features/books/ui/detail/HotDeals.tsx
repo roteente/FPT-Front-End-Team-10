@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { Book } from '../../api/bookApi';
 import { useNavigate } from "react-router-dom";
 
@@ -7,13 +8,14 @@ interface HotDealsProps {
 }
 
 const HotDeals: React.FC<HotDealsProps> = ({ deals }) => {
+  const navigate = useNavigate();
+  
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('vi-VN').format(price);
   };
 
-  const navigate = useNavigate();
-  const handleClick = (id) => {
-    navigate(`/books/${id}`);
+  const handleDealClick = (dealId: string | number) => {
+    navigate(`/books/${dealId}`);
   };
 
   return (
@@ -21,8 +23,8 @@ const HotDeals: React.FC<HotDealsProps> = ({ deals }) => {
       {deals.slice(0, 4).map((deal) => (
         <div 
           key={deal.id}
-          onClick = {() => handleClick(deal.id)}
           className="bg-white border border-red-200 rounded-lg p-3 hover:shadow-lg transition-all cursor-pointer group relative"
+          onClick={() => handleDealClick(deal.id)}
         >
           {/* Hot Deal Badge */}
           <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full z-10">

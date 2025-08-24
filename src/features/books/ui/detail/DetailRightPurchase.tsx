@@ -29,21 +29,31 @@ const DetailRightPurchase: React.FC<DetailRightPurchaseProps> = ({ book }) => {
       navigate('/login', { state: { from: `/books/${book.id}`, redirectAfterLogin: '/checkout' } });
       return;
     }
-
-    try {
-      // Add to cart first
-      await addCartItem({
-        userId: user.id,
-        bookId: typeof book.id === 'string' ? parseInt(book.id) : Number(book.id),
-        quantity: quantity
-      }).unwrap();
-
-      // Navigate to checkout
-      navigate('/checkout');
-    } catch (error) {
-      console.error('Error adding item to cart:', error);
-      alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng. Vui lòng thử lại.');
-    }
+    
+    // Tạo đối tượng sản phẩm "Mua ngay" với đầy đủ thông tin
+    const buyNowProduct = {
+      id: Date.now(), // id tạm thời
+      bookId: typeof book.id === 'string' ? parseInt(book.id) : Number(book.id),
+      userId: user.id,
+      title: book.name,
+      price: book.current_seller?.price || book.list_price || 0,
+      image: (book.images?.[0] as any)?.base_url || 
+              (book.images?.[0] as any)?.medium_url || 
+              book.images?.[0] || 
+              book.thumbnail || 
+              book.book_cover || 
+              '',
+      quantity: quantity,
+      book: book
+    };
+    
+    console.log('Buy now product:', buyNowProduct);
+    
+    // Lưu vào sessionStorage với key buyNowProduct
+    sessionStorage.setItem('buyNowProduct', JSON.stringify(buyNowProduct));
+    
+    // Chuyển hướng sang checkout
+    navigate('/checkout');
   };
 
   const handleBuyLater = () => {

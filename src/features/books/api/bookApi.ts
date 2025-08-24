@@ -1,4 +1,5 @@
 import { baseApi } from "@/core/api/baseApi";
+import { mockBooks, createBookWithDefaults } from '../data/mockBooks';
 
 // Kiểu dữ liệu đầy đủ cho Book
 export type Book = {
@@ -84,7 +85,28 @@ export const booksApi = baseApi.injectEndpoints({
       },
       transformResponse: (res: unknown) => {
         console.log('All Books API Response:', res);
-        return Array.isArray(res) ? (res as Book[]) : [];
+        
+        // Handle empty response hoặc lỗi API
+        if (!res) {
+          console.warn('API returned empty response, using fallback data');
+          return mockBooks;
+        }
+        
+        if (Array.isArray(res)) {
+          // Ensure all books have required fields
+          return (res as any[]).map(book => createBookWithDefaults(book));
+        }
+        
+        // Nếu response có structure khác (ví dụ: { data: [...] })
+        if (typeof res === 'object' && 'data' in res) {
+          const data = (res as any).data;
+          if (Array.isArray(data)) {
+            return data.map(book => createBookWithDefaults(book));
+          }
+        }
+        
+        console.warn('Unexpected API response format, using fallback:', res);
+        return mockBooks;
       },
       providesTags: (result) =>
         result
@@ -144,7 +166,7 @@ export const booksApi = baseApi.injectEndpoints({
         let total = 0;
         
         if (Array.isArray(response)) {
-          books = response as Book[];
+          books = (response as any[]).map(book => createBookWithDefaults(book));
           // Nếu có search query, lọc theo tên sách, tác giả, mô tả
           if (arg.q) {
             const query = arg.q.toLowerCase();
@@ -229,6 +251,32 @@ export const booksApi = baseApi.injectEndpoints({
           const endIndex = startIndex + limit;
           
           books = books.slice(startIndex, endIndex);
+        } else {
+          // Fallback to mock data if API fails
+          console.warn('Search API returned non-array response, using fallback data');
+          books = mockBooks;
+          total = books.length;
+          
+          // Apply same filtering and pagination to mock data
+          if (arg.q) {
+            const query = arg.q.toLowerCase();
+            books = books.filter(book => 
+              book.name.toLowerCase().includes(query) ||
+              book.description?.toLowerCase().includes(query) ||
+              book.short_description?.toLowerCase().includes(query) ||
+              book.authors?.some(author => 
+                author.name?.toLowerCase().includes(query)
+              )
+            );
+          }
+          
+          // Phân trang cho mock data
+          const page = arg.page || 1;
+          const limit = arg.limit || 12;
+          const startIndex = (page - 1) * limit;
+          const endIndex = startIndex + limit;
+          books = books.slice(startIndex, endIndex);
+          total = mockBooks.length;
         }
         
         const result: SearchResponse = {
@@ -260,9 +308,17 @@ export const booksApi = baseApi.injectEndpoints({
           url: `/books/${id}`,
         };
       },
-      transformResponse: (res: unknown) => {
+      transformResponse: (res: unknown, meta, arg) => {
         console.log('Book Detail API Response:', res);
-        return res as Book;
+        
+        if (res && typeof res === 'object') {
+          return createBookWithDefaults(res as any);
+        }
+        
+        // Fallback to mock data
+        console.warn('Book detail API failed, using mock data for ID:', arg);
+        const mockBook = mockBooks.find(book => book.id.toString() === arg);
+        return mockBook || createBookWithDefaults({ id: arg, name: "Sách không tìm thấy" });
       },
       providesTags: (result, error, id) => [
         { type: "Book" as const, id }

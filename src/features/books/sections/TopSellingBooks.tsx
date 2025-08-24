@@ -11,27 +11,18 @@ const TopSellingBooks = ({ books }: TopSellingBooksProps) => {
     return new Intl.NumberFormat("vi-VN").format(price);
   };
 
-  // Lấy top sách bán chạy nhất
+  // Lấy top sách bán chạy nhất từ dữ liệu thật
   const topBooks = React.useMemo(() => {
     return [...books]
-      .filter((book) => book.quantity_sold?.value)
+      .filter((book) => book.quantity_sold?.value || book.current_seller?.price || book.list_price)
       .sort((a, b) => (b.quantity_sold?.value || 0) - (a.quantity_sold?.value || 0))
-      .slice(0, 10);
+      .slice(0, 10)
+      .map((book, index) => ({
+        id: book.id,
+        name: book.name,
+        price: formatPrice(book.current_seller?.price || book.list_price || 0) + 'đ'
+      }));
   }, [books]);
-
-  // Tạo một mảng giả lập tương tự với hình ảnh
-  const hardcodedBooks = [
-    { id: '1', name: 'NEXUS - Luộc Sử Của Những Mạng Lưới Thông Tin Từ Thời Đá Đến Thời Nhân Tạo', price: '365.000' },
-    { id: '2', name: 'Chat GPT Thực Chiến', price: '110.000' },
-    { id: '3', name: 'Đắt Đỏ Một Bầy Sói Hay Chăn Một Đàn Cừu', price: '127.000' },
-    { id: '4', name: 'Thao Túng Tâm Lý', price: '115.100' },
-    { id: '5', name: 'Giải mã Hóc-môn Dopamine', price: '145.000' },
-    { id: '6', name: 'Personal Best American B1+ Intermediate Pack B', price: '228.920' },
-    { id: '7', name: 'Bookmark lạp xách giấy cứng', price: '2.000' },
-    { id: '8', name: 'Hero U Arc - Tập 3', price: '119.000' },
-    { id: '9', name: 'Blue Period - Tập 03', price: '45.500' },
-    { id: '10', name: 'Semantic Error - Lỗi Logic (Tập 2)', price: '161.000' }
-  ];
 
   return (
     <div 
@@ -69,10 +60,10 @@ const TopSellingBooks = ({ books }: TopSellingBooksProps) => {
 
       {/* Content */}
       <div className="px-4 mt-4">
-        {/* Danh sách bảng xếp hạng - sử dụng dữ liệu cố định từ hình ảnh */}
+        {/* Danh sách bảng xếp hạng - sử dụng dữ liệu thật từ API */}
         <div className="py-4">
           <ul className="space-y-2">
-            {hardcodedBooks.map((book, index) => (
+            {topBooks.map((book, index) => (
               <li key={book.id} className="py-1">
                 <Link
                   to={`/books/${book.id}`}
@@ -116,7 +107,6 @@ const TopSellingBooks = ({ books }: TopSellingBooksProps) => {
                     }}
                   >
                     {book.price}
-                    <sup>đ</sup>
                   </div>
                 </Link>
               </li>
