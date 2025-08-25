@@ -333,7 +333,8 @@ export default function Home() {
           </div>
         </div>
       )}
-      
+
+      {/* Main Content Container */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Row 1: Breadcrumb & Mobile Menu */}
         <div className="py-4 flex items-center justify-between">
@@ -342,7 +343,7 @@ export default function Home() {
             <span className="text-slate-400">/</span>
             <span className="text-slate-700">Nhà Sách Tiki</span>
           </nav>
-          
+
           {/* Mobile menu button */}
           <button
             onClick={() => setSidebarOpen(true)}
@@ -357,7 +358,7 @@ export default function Home() {
         {/* Row 2: Main Layout */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar */}
-          <aside className="hidden lg:block" style={{width: '240px'}}>
+          <aside className="hidden lg:block" style={{ width: '240px' }}>
             <BookCategoriesSidebar
               selectedCategory={selectedSidebarCategory}
               onCategorySelect={(categoryName) => {
@@ -371,13 +372,13 @@ export default function Home() {
           {/* Main Content */}
           <main className="flex-1 min-w-0">
             <div className="space-y-6">
-          {/* Title */}
-          <div className="rounded-[8px] border border-[#EBEBF0] bg-white flex items-center px-4 py-4 lg:py-6">
-            <h1 className="text-xl sm:text-2xl lg:text-[28px] font-semibold text-[#27272A]">Nhà Sách Tiki</h1>
-          </div>
+              {/* Title */}
+              <div className="rounded-[8px] border border-[#EBEBF0] bg-white flex items-center px-4 py-4 lg:py-6">
+                <h1 className="text-xl sm:text-2xl lg:text-[28px] font-semibold text-[#27272A]">Nhà Sách Tiki</h1>
+              </div>
 
-          {/* Banner */}
-          <BannerSection books={books} />
+              {/* Banner */}
+              <BannerSection books={books} />
 
           {/* Category strip */}
           <div className="rounded-[8px] border border-[#EBEBF0] bg-white p-6">
@@ -391,62 +392,62 @@ export default function Home() {
             />
           </div>
 
-          {/* Sort bar */}
-          <React.Suspense fallback={<div className="rounded-[8px] border border-[#EBEBF0] bg-white p-4 h-32 animate-pulse" />}>
-            <div className="rounded-[8px] border border-[#EBEBF0] bg-white p-4 lg:p-6">
-              <SortBar 
-                currentSort={sortBy}
-                currentOrder={sortOrder}
-                onSortChange={(sort, order) => {
-                  setSortBy(sort);
-                  setSortOrder(order);
-                }}
-                totalResults={books.length} 
-                filters={filters}
-                onFilterChange={setFilters}
-              />
-            </div>
-          </React.Suspense>
-
-          {/* Product grid */}
-          <React.Suspense fallback={<div className="rounded-[8px] border border-[#EBEBF0] bg-white p-4 h-96 animate-pulse" />}>
-            <div className="rounded-[8px] border border-[#EBEBF0] bg-white p-4 lg:p-6">
-              {error ? (
-                <div className="flex flex-col items-center justify-center py-12">
-                  <div className="text-red-500 mb-2">⚠️ Lỗi kết nối API</div>
-                  <div className="text-sm text-gray-600 mb-4">
-                    Không thể kết nối tới server. Vui lòng kiểm tra:
-                  </div>
-                  <ul className="text-sm text-gray-600 list-disc list-inside space-y-1">
-                    <li>Server có đang chạy trên http://localhost:3000?</li>
-                    <li>Endpoint /books có tồn tại không?</li>
-                    <li>CORS có được cấu hình đúng không?</li>
-                  </ul>
-                  <div className="mt-4 text-xs text-gray-500">
-                    Error: {JSON.stringify(error)}
-                  </div>
+              {/* Sort bar */}
+              <React.Suspense fallback={<div className="rounded-[8px] border border-[#EBEBF0] bg-white p-4 h-32 animate-pulse" />}>
+                <div className="rounded-[8px] border border-[#EBEBF0] bg-white p-4 lg:p-6">
+                  <SortBar 
+                    currentSort={sortBy}
+                    currentOrder={sortOrder}
+                    onSortChange={(sort, order) => {
+                      setSortBy(sort);
+                      setSortOrder(order);
+                    }}
+                    totalResults={books.length} 
+                    filters={filters}
+                    onFilterChange={setFilters}
+                  />
                 </div>
-              ) : (
-                <ProductGrid 
-                  books={books} 
-                  isLoading={isLoading} 
-                  sortBy={sortBy} 
-                  sortOrder={sortOrder} 
-                />
-              )}
-            </div>
-          </React.Suspense>
-          
-          {/* Top sách bán chạy - Đặt ngay sau ProductGrid */}
-          <React.Suspense fallback={<div className="bg-white border border-[#EBEBF0] h-[383px] animate-pulse mt-6" />}>
-            <div className="mt-6">
-              <TopSellingBooks books={allBooks} />
-            </div>
-          </React.Suspense>
+              </React.Suspense>
+
+              {/* Product grid */}
+              <React.Suspense fallback={<div className="rounded-[8px] border border-[#EBEBF0] bg-white p-4 h-96 animate-pulse" />}>
+                <div className="rounded-[8px] border border-[#EBEBF0] bg-white p-4 lg:p-6">
+                  {error ? (
+                    <div className="flex flex-col items-center justify-center py-12">
+                      <div className="text-red-500 mb-2">⚠️ Lỗi kết nối API</div>
+                      <div className="text-sm text-gray-600 mb-4">
+                        Không thể kết nối tới server. Vui lòng kiểm tra:
+                      </div>
+                      <ul className="text-sm text-gray-600 list-disc list-inside space-y-1">
+                        <li>Server có đang chạy trên http://localhost:3000?</li>
+                        <li>Endpoint /books có tồn tại không?</li>
+                        <li>CORS có được cấu hình đúng không?</li>
+                      </ul>
+                      <div className="mt-4 text-xs text-gray-500">
+                        Error: {JSON.stringify(error)}
+                      </div>
+                    </div>
+                  ) : (
+                    <ProductGrid 
+                      books={books} 
+                      isLoading={isLoading} 
+                      sortBy={sortBy} 
+                      sortOrder={sortOrder} 
+                    />
+                  )}
+                </div>
+              </React.Suspense>
             </div>
           </main>
         </div>
       </div>
+
+      {/* TopSellingBooks section - moved outside main content */}
+      <React.Suspense fallback={<div className="bg-white border border-[#EBEBF0] h-[383px] animate-pulse mt-6" />}>
+        <div className="mt-6 w-full px-4 sm:px-6 lg:px-8">
+          <TopSellingBooks books={allBooks} />
+        </div>
+      </React.Suspense>
     </div>
   );
 }

@@ -14,7 +14,6 @@ const HotDeals: React.FC<HotDealsProps> = ({ deals }) => {
   };
 
   const handleDealClick = (dealId: string | number) => {
-    window.scrollTo(0, 0);
     navigate(`/books/${dealId}`);
   };
 

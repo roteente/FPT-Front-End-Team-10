@@ -14,7 +14,6 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({ products }) => {
   };
 
   const handleProductClick = (productId: string | number) => {
-    window.scrollTo(0, 0);
     navigate(`/books/${productId}`);
   };
 
